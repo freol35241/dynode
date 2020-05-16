@@ -1,5 +1,7 @@
 # dynode 
 
+![](https://github.com/freol35241/dynode/workflows/dynode/badge.svg)
+
 A framework for modelling and simulation of dynamical systems in the form of ordinary differential equations.
 
 **Requires python >= 3.6**
