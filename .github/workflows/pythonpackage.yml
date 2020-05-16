@@ -31,6 +31,8 @@ jobs:
         pip install -e .
     - name: Test with pytest
       run: |
-        pytest --cov=dynode test
+        pytest --cov=dynode --cov-report=xml test
     - name: Codecov
       uses: codecov/codecov-action@v1.0.7
+      with:
+        file: ./coverage.xml
