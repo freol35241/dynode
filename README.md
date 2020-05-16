@@ -1,12 +1,13 @@
 # dynode 
 
 ![](https://github.com/freol35241/dynode/workflows/dynode/badge.svg)
+[![codecov](https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg)](https://codecov.io/gh/freol35241/dynode)
 
 A framework for modelling and simulation of dynamical systems in the form of ordinary differential equations.
 
 **Requires python >= 3.6**
 
-Dynode solves equations of the form ```y' = f(t, y)``` but allows ```f``` to be modelled in an modular, object-oriented fashion using the notions of separate ```Systems``` that expose ```states``` and their corresponding derivatives, ```ders```. ```f``` may then be composed of an arbitraily complex collection of, connected or unconnected, ```Systems```.
+Dynode solves equations of the form ```y' = f(t, y)``` using SciPy's [ode solver](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html) but allows ```f``` to be modelled in a modular, object-oriented fashion using the notions of separate ```Systems``` that expose ```states``` and their corresponding derivatives, ```ders```. ```f``` may then be composed of an arbitraily complex collection of, connected or unconnected, ```Systems```.
 
 
 ### Example: Single Van der Pol oscillator
