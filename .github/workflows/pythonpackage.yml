@@ -30,5 +30,8 @@ jobs:
         pip install -r requirements_dev.txt
         pip install .
     - name: Test with pytest
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        pytest test
+        pytest --cov=dynode test
+        coveralls
