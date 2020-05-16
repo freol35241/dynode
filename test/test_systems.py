@@ -7,21 +7,19 @@ class VanDerPol(SystemInterface):
 
     def __init__(self):
         super().__init__()
-        self.inputs.a = 1.0
-        self.inputs.b = 1.0
-        self.states.x = 1.0
+        self.inputs.mu = 1.0
+        self.states.x = 0.0
         self.ders.dx = 0.0
         self.states.y = 0.0
         self.ders.dy = 0.0
 
     def do_step(self, time):
-        a = self.inputs.a
-        b = self.inputs.b
+        mu = self.inputs.mu
         x = self.states.x
         y = self.states.y
 
-        self.ders.dx = a*x*(b-y*y)-y
-        self.ders.dy = x
+        self.ders.dx = y
+        self.ders.dy = mu*(1-x**2)*y - x
 
 class SingleDegreeMass(SystemInterface):
 
