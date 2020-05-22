@@ -2,11 +2,11 @@ import pytest
 import mock
 import numpy as np
 
-from dynode.containers import (ParameterContainer, TypedParameterContainer,
+from dynode.containers import (ParameterContainer, VariableContainer,
     ResultContainer)
 
 @pytest.mark.parametrize('cont', [ParameterContainer, 
-    TypedParameterContainer, ResultContainer])
+    VariableContainer, ResultContainer])
 def test_attribute_access(cont):
     c = cont()
     value = np.array([1,2,3])
@@ -14,7 +14,7 @@ def test_attribute_access(cont):
     np.array_equal(value, c.test)
 
 @pytest.mark.parametrize('cont', [ParameterContainer, 
-    TypedParameterContainer])
+    VariableContainer])
 def test_attribute_creation(cont):
     c = cont()
     value = np.array([1,2,3])
@@ -22,14 +22,14 @@ def test_attribute_creation(cont):
     np.array_equal(value, c['test'])
 
 @pytest.mark.parametrize('cont', [ParameterContainer, 
-    TypedParameterContainer, ResultContainer])
+    VariableContainer, ResultContainer])
 def test_attribute_access_error(cont):
     c = cont()
     with pytest.raises(KeyError):
         c.test
 
 def test_type_enforcement_scalar():
-    c = TypedParameterContainer()
+    c = VariableContainer()
 
     test_scalar = 10
     c['test'] = test_scalar
@@ -37,7 +37,7 @@ def test_type_enforcement_scalar():
     assert(c.test[0] == test_scalar)
 
 def test_type_enforcement_list():
-    c = TypedParameterContainer()
+    c = VariableContainer()
 
     test_list = [1,2,3]
     c['test'] = test_list
@@ -45,7 +45,7 @@ def test_type_enforcement_list():
     assert(np.array_equal(c.test, test_list))
 
 def test_type_enforcement_tuple():
-    c = TypedParameterContainer()
+    c = VariableContainer()
 
     test_tuple = (1,2,3)
     c['test'] = test_tuple
@@ -53,14 +53,14 @@ def test_type_enforcement_tuple():
     assert(np.array_equal(c.test, test_tuple))
 
 def test_type_enforcement_array():
-    c = TypedParameterContainer()
+    c = VariableContainer()
 
     test_array = np.array([1,2,3])
     c['test'] = test_array
     assert(np.array_equal(c.test, test_array))
 
 def test_type_enforcement_dict():
-    c = TypedParameterContainer()
+    c = VariableContainer()
 
     with pytest.raises(TypeError):
         test_dict = {'test': 10}

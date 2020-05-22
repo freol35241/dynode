@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-from .containers import (ParameterContainer, TypedParameterContainer,
+from .containers import (ParameterContainer, VariableContainer,
                          ResultContainer)
 
 class SystemInterface(ABC):
@@ -22,8 +22,8 @@ class SystemInterface(ABC):
         self._subs = list()
 
         # I/O
-        self._states = TypedParameterContainer()
-        self._ders = TypedParameterContainer()
+        self._states = VariableContainer()
+        self._ders = VariableContainer()
         self._inputs = ParameterContainer()
         self._outputs = ParameterContainer()
 

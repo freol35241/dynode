@@ -6,7 +6,7 @@ import mock
 import numpy as np
 
 import dynode.system as ds
-from dynode.containers import (ParameterContainer, TypedParameterContainer,
+from dynode.containers import (ParameterContainer, VariableContainer,
     ResultContainer)
 
 from test_systems import VanDerPol, SingleDegreeMass, EmptyTestSystem, CompositeTestSystem
@@ -20,8 +20,8 @@ def test_system_attributes():
     s = EmptyTestSystem()
     assert(isinstance(s.inputs, ParameterContainer))
     assert(isinstance(s.outputs, ParameterContainer))
-    assert(isinstance(s.states, TypedParameterContainer))
-    assert(isinstance(s.ders, TypedParameterContainer))
+    assert(isinstance(s.states, VariableContainer))
+    assert(isinstance(s.ders, VariableContainer))
     assert(isinstance(s.res, ResultContainer))
 
 @pytest.mark.parametrize('sys', [EmptyTestSystem, VanDerPol, SingleDegreeMass, CompositeTestSystem])

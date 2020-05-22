@@ -14,7 +14,7 @@ class ParameterContainer(_BaseContainer):
     def __setattr__(self, *args, **kwargs):
         return self.__setitem__(*args, **kwargs)
 
-class TypedParameterContainer(ParameterContainer):
+class VariableContainer(ParameterContainer):
 
     def __setitem__(self, key, value):
         if np.isscalar(value):

@@ -6,17 +6,19 @@ from test_systems import VanDerPol, SingleDegreeMass
 from dynode import connect_signals
 from dynode.simulation import Simulation as Sim
 
-def test_VanDerPol():
+def test_VanDerPol(pinned):
     s = VanDerPol()
     s.states.x = 1
+    s.add_store('states', 'x')
 
     sim = Sim()
     sim.add_system(s)
 
     sim.simulate(100, 0.1)
 
-    assert(s.states.x.item() == pytest.approx(1.54805437))
-    assert(s.states.y.item() == pytest.approx(-0.75637991))
+    assert(s.states.x.item() == pinned)
+    assert(s.states.y.item() == pinned)
+    assert(np.array(s.res.x).flatten().tolist() == pinned)
 
 def test_connected_systems():
     sys1 = VanDerPol()
@@ -42,7 +44,7 @@ def test_connected_systems():
 
     assert(np.array_equal(sys1.res.y[1:], sys2.res.mu[1:]))
 
-def test_heirarchical_systems():
+def test_heirarchical_systems(pinned):
 
     sys1 = VanDerPol()
     sys1.states.x = 1
@@ -81,7 +83,7 @@ def test_heirarchical_systems():
     assert(np.array_equal(sys1.states.y, sys11.states.y))
 
 
-def test_1DOF_MassSpring():
+def test_1DOF_MassSpring(pinned):
     s = SingleDegreeMass()
     s.inputs.mass = 10
 
@@ -97,6 +99,9 @@ def test_1DOF_MassSpring():
     sim.add_system(s)
 
     sim.simulate(20, 0.01)
+    
+    upper = max(s.res.x[1:]).item()
+    lower = min(s.res.x[1:]).item()
 
-    assert(max(s.res.x[1:]) == pytest.approx(10, 0.001))
-    assert(min(s.res.x[1:]) == pytest.approx(-10, 0.001))
+    assert(upper == pinned(rel=0.001))
+    assert(lower == pinned(rel=0.001))
