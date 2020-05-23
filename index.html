@@ -25,8 +25,10 @@ ordinary differential equations …" />
 ordinary differential equations.</p>
 <h1 id="dynode">dynode</h1>
 <p><img alt="" src="https://github.com/freol35241/dynode/workflows/dynode/badge.svg">
-<a href="https://codecov.io/gh/freol35241/dynode"><img alt="codecov" src="https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg"></a></p>
+<a href="https://codecov.io/gh/freol35241/dynode"><img alt="codecov" src="https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg"></a>
+<img alt="docs" src="https://github.com/freol35241/dynode/workflows/docs/badge.svg"></p>
 <p>A framework for modelling and simulation of dynamical systems in the form of ordinary differential equations.</p>
+<p><a href="https://freol35241.github.io/dynode/"><strong>&ndash;&gt; Documentation &lt;&ndash;</strong></a></p>
 <p><strong>Requires python &gt;= 3.6</strong></p>
 <h2 id="general">General</h2>
 <p>Dynode solves equations of the form <code>y' = f(t, y)</code> using SciPy's <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html">ode solver</a> but allows <code>f</code> to be modelled in a modular, object-oriented fashion using the notions of separate <code>Systems</code> that expose <code>states</code> and their corresponding derivatives, <code>ders</code>. <code>f</code> may then be composed of an arbitraily complex collection of, connected or unconnected, <code>Systems</code>.</p>
