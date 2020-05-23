@@ -1,9 +1,987 @@
 <!doctype html>
-<html>
-  <head>
-    <title>Dynode</title>
-  </head>
-  <body>
-    <p>Dynode</p>
-  </body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>dynode API documentation</title>
+<meta name="description" content="A framework for modelling and simulation of dynamical systems in the form of
+ordinary differential equations …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>dynode</code></h1>
+</header>
+<section id="section-intro">
+<p>A framework for modelling and simulation of dynamical systems in the form of
+ordinary differential equations.</p>
+<h1 id="dynode">dynode</h1>
+<p><img alt="" src="https://github.com/freol35241/dynode/workflows/dynode/badge.svg">
+<a href="https://codecov.io/gh/freol35241/dynode"><img alt="codecov" src="https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg"></a></p>
+<p>A framework for modelling and simulation of dynamical systems in the form of ordinary differential equations.</p>
+<p><strong>Requires python &gt;= 3.6</strong></p>
+<h2 id="general">General</h2>
+<p>Dynode solves equations of the form <code>y' = f(t, y)</code> using SciPy's <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html">ode solver</a> but allows <code>f</code> to be modelled in a modular, object-oriented fashion using the notions of separate <code>Systems</code> that expose <code>states</code> and their corresponding derivatives, <code>ders</code>. <code>f</code> may then be composed of an arbitraily complex collection of, connected or unconnected, <code>Systems</code>.</p>
+<h4 id="example-single-van-der-pol-oscillator">Example: Single Van der Pol oscillator</h4>
+<p>A well-known dynamical system is the <a href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">Van der Pol oscillator</a>, which is described by a second-order differential equation:</p>
+<p><img alt="Van der Pol 2nd order differential equation" src="https://wikimedia.org/api/rest_v1/media/math/render/svg/99e33aa1bcd07cd6ce8cf2cf5bd9d630c3b0d21e"></p>
+<p>Rewriting it to a system of ordinary differential equations yields:</p>
+<p><img alt="Van der Pol ODE1" src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2e9748620372632fc912d764f4589a32f0626658"></p>
+<p><img alt="Van der Pol ODE2" src="https://wikimedia.org/api/rest_v1/media/math/render/svg/82fff2145f98d0281f9c22c97fe6c625386d2b8e"></p>
+<p>In dynode, a Van der Pol <code>system</code> may be modelled as:</p>
+<pre><code>from dynode import SystemInterface
+
+class VanDerPol(SystemInterface):
+
+    def __init__(self):
+        super().__init__()
+
+        self.inputs.mu = 1.0
+
+        self.states.x = 0.0
+        self.ders.dx = 0.0
+
+        self.states.y = 0.0
+        self.ders.dy = 0.0
+
+    def do_step(self, time):
+        mu = self.inputs.mu
+        x = self.states.x
+        y = self.states.y
+
+        self.ders.dx = y
+        self.ders.dy = mu*(1-x**2)*y - x
+</code></pre>
+<p>And may be simulated like this:</p>
+<pre><code>from dynode.simulation import Simulation
+
+sys = VanDerPol()
+sys.add_store('states', 'x')
+sys.add_store('states', 'y')
+
+sim = Simulation()
+sim.add_system(sys)
+
+sys.states.x = 1
+sim.simulate(100, 0.1)
+
+import matplotlib.pyplot as plt
+plt.plot(sys.res.time, sys.res.x)
+plt.plot(sys.res.time, sys.res.y)
+plt.show()
+</code></pre>
+<h2 id="connected-systems">Connected systems</h2>
+<p>Dynode systems accepts <code>connections</code> as callbacks registered to a system. The callback signature looks like:</p>
+<pre><code>def connection_callback(system, time):
+    pass
+</code></pre>
+<p>where <code>system</code> is a reference to the system this callback is registered to and <code>time</code> is the current time in the simulation.</p>
+<p>Connections can be either <code>pre_step_connections</code> or <code>post_step_connections</code> depending on if the callback should be called prior to or after the <code>do_step</code>-method of the system</p>
+<h4 id="example-two-connected-van-der-pol-oscillators">Example: Two connected Van der Pol oscillators</h4>
+<p>Imagine the situation where you have two oscillators interacting as follows:</p>
+<ul>
+<li>The damping paramater (<code>mu</code>) of oscillator 1 is forced by a sinus wave according to <code>0.1*sin(0.1*t)</code></li>
+<li>The damping parmeter (<code>mu</code>) of oscillator 2 is forced to follow the the state <code>y</code> of oscillator 1</li>
+</ul>
+<p>In dynode, the above scenario can be described and simulated as:</p>
+<pre><code>from dynode import connect_signals
+
+sys1 = VanDerPol()
+sys1.states.x = 1
+
+sys2 = VanDerPol()
+
+# Connecting state y of sys1 to input mu of sys2
+sys1.add_post_connection(connect_signals(sys1.states, 'y', sys2.inputs, 'mu'))
+
+# Forcing input mu of sys1 to follow a sinus function
+def sinus_forcer(sys, t):
+    sys.inputs.mu = 0.1*np.sin(0.1*t)
+
+sys1.add_pre_connection(sinus_forcer)
+
+sim = Sim()
+sim.add_system(sys1)
+sim.add_system(sys2)
+
+sim.simulate(100, 0.1)
+</code></pre>
+<h2 id="license">License</h2>
+<p>Distributed under the terms of the MIT license, <code><a title="dynode" href="#dynode">dynode</a></code> is free and open source software</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+A framework for modelling and simulation of dynamical systems in the form of
+ ordinary differential equations.
+
+.. include:: ../README.md
+&#34;&#34;&#34;
+
+__pdoc__ = {
+    &#39;containers&#39;: False,
+    &#39;simulation&#39;: False,
+    &#39;system&#39;: False,
+    &#39;SystemInterface.get_states&#39;: False,
+    &#39;SystemInterface.get_ders&#39;: False,
+    &#39;SystemInterface.dispatch_states&#39;: False,
+    &#39;SystemInterface.store&#39;: False
+}
+
+from .simulation import Simulation
+from .system import SystemInterface
+from typing import Callable
+
+def connect_signals(container1, key1, container2, key2) -&gt; Callable:
+    &#34;&#34;&#34;Returns callable that connects key1 of container1 to key2
+     of container2. The callable can be used as a pre-step and/or
+     post-step connection.
+     
+     Example usage, connecting state `x` on sys1 to input `a` on sys2:
+     ```
+     sys1.add_post_connection(
+         connect_signals(sys1.states, &#39;x&#39;, sys2.inputs, &#39;a&#39;)
+     )
+     ```
+    &#34;&#34;&#34;    
+    # pylint: disable=unused-argument
+    def connect(*args, **kwargs):
+        container2[key2] = container1[key1]
+    return connect
+
+__all__ = [
+    &#39;Simulation&#39;,
+    &#39;SystemInterface&#39;,
+    &#39;connect_signals&#39;
+]</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="dynode.connect_signals"><code class="name flex">
+<span>def <span class="ident">connect_signals</span></span>(<span>container1, key1, container2, key2) -> Callable</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns callable that connects key1 of container1 to key2
+of container2. The callable can be used as a pre-step and/or
+post-step connection.</p>
+<p>Example usage, connecting state <code>x</code> on sys1 to input <code>a</code> on sys2:</p>
+<pre><code>sys1.add_post_connection(
+    connect_signals(sys1.states, 'x', sys2.inputs, 'a')
+)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def connect_signals(container1, key1, container2, key2) -&gt; Callable:
+    &#34;&#34;&#34;Returns callable that connects key1 of container1 to key2
+     of container2. The callable can be used as a pre-step and/or
+     post-step connection.
+     
+     Example usage, connecting state `x` on sys1 to input `a` on sys2:
+     ```
+     sys1.add_post_connection(
+         connect_signals(sys1.states, &#39;x&#39;, sys2.inputs, &#39;a&#39;)
+     )
+     ```
+    &#34;&#34;&#34;    
+    # pylint: disable=unused-argument
+    def connect(*args, **kwargs):
+        container2[key2] = container1[key1]
+    return connect</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="dynode.Simulation"><code class="flex name class">
+<span>class <span class="ident">Simulation</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simulation class representing a set of connected or unconnected
+dynamical systems that can be stepped forward in time by a
+numerical integration scheme.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Simulation:
+    &#34;&#34;&#34;
+    Simulation class representing a set of connected or unconnected
+     dynamical systems that can be stepped forward in time by a
+     numerical integration scheme.
+    &#34;&#34;&#34;
+    def __init__(self):
+        self._systems = list()
+        self._events = set()
+        self._t = 0
+        
+    @property
+    def systems(self):
+        &#34;&#34;&#34;
+        List of systems added to this simulation
+        &#34;&#34;&#34;
+        return self._systems
+
+    def add_system(self, system) -&gt; None:
+        &#34;&#34;&#34;
+        Adds a system to the simulation
+        &#34;&#34;&#34;
+        if not system in self._systems:
+            self._systems.append(system)
+
+    def add_event(self, event) -&gt; None:
+        &#34;&#34;&#34;
+        Adds an event to this simulation.
+        
+        `event` is a callable of the form:
+        ```
+        def event(t : int, states : np.ndarray):
+            pass
+        ```
+        &#34;&#34;&#34;
+        self._events.add(event)
+        return partial(self._events.remove, event)
+
+    #pylint: disable=invalid-name, protected-access
+    def simulate(self, t, store_dt, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
+        &#34;&#34;&#34;
+        Step forward in time, `t` seconds while storing any stored variables and
+         checking events every `store_dt` interval. 
+         
+        Raise RuntimeErrors if:
+        
+        * There are no systems added to the simulation
+        * There are no states/ders to be integrated
+        * The solver fails due to numerical instabilities
+        &#34;&#34;&#34;
+        if not self.systems:
+            raise RuntimeError(&#39;Need at least 1 system in the simulation!&#39;)
+
+        # Initial state
+        y0 = collect_states(self._systems)
+        if not y0.size &gt; 0:
+            raise RuntimeError(&#39;Need at least one state/der combination!&#39;)
+
+        dy = np.zeros_like(y0)
+
+        # Systems of ODEs as single func
+        def func(t, y):
+            dispatch_states(y, self.systems)
+
+            for sys in self.systems:
+                sys._step(t)
+
+            collect_ders(dy, self.systems)
+            return dy
+
+        # Setup of solver
+        solver = ode(func)
+        solver.set_integrator(integrator, **kwargs)
+        solver.set_initial_value(y0, t=self._t)
+
+        # Store initial results
+        if self._t == 0:
+            for sys in self.systems:
+                sys.store(self._t)
+
+        # Integrate
+        steps = int(t/store_dt)
+
+        for _ in range(steps):
+
+            # Step
+            solver.integrate(solver.t+store_dt)
+            if not solver.successful():
+                raise RuntimeError(&#39;Solver failed&#39;)
+
+            # Store results
+            for sys in self.systems:
+                sys.store(solver.t)
+
+            # Check events
+            terminate = False
+            for event in self._events:
+                if event(solver.t, solver.y):
+                    terminate = True
+                    break
+
+            # Bail if any event is True
+            if terminate:
+                break
+            
+        # Update internal state
+        self._t = solver.t
+
+        return solver.t</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="dynode.Simulation.systems"><code class="name">var <span class="ident">systems</span></code></dt>
+<dd>
+<div class="desc"><p>List of systems added to this simulation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def systems(self):
+    &#34;&#34;&#34;
+    List of systems added to this simulation
+    &#34;&#34;&#34;
+    return self._systems</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="dynode.Simulation.add_event"><code class="name flex">
+<span>def <span class="ident">add_event</span></span>(<span>self, event) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds an event to this simulation.</p>
+<p><code>event</code> is a callable of the form:</p>
+<pre><code>def event(t : int, states : np.ndarray):
+    pass
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_event(self, event) -&gt; None:
+    &#34;&#34;&#34;
+    Adds an event to this simulation.
+    
+    `event` is a callable of the form:
+    ```
+    def event(t : int, states : np.ndarray):
+        pass
+    ```
+    &#34;&#34;&#34;
+    self._events.add(event)
+    return partial(self._events.remove, event)</code></pre>
+</details>
+</dd>
+<dt id="dynode.Simulation.add_system"><code class="name flex">
+<span>def <span class="ident">add_system</span></span>(<span>self, system) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a system to the simulation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_system(self, system) -&gt; None:
+    &#34;&#34;&#34;
+    Adds a system to the simulation
+    &#34;&#34;&#34;
+    if not system in self._systems:
+        self._systems.append(system)</code></pre>
+</details>
+</dd>
+<dt id="dynode.Simulation.simulate"><code class="name flex">
+<span>def <span class="ident">simulate</span></span>(<span>self, t, store_dt, integrator='dopri5', **kwargs) -> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Step forward in time, <code>t</code> seconds while storing any stored variables and
+checking events every <code>store_dt</code> interval. </p>
+<p>Raise RuntimeErrors if:</p>
+<ul>
+<li>There are no systems added to the simulation</li>
+<li>There are no states/ders to be integrated</li>
+<li>The solver fails due to numerical instabilities</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def simulate(self, t, store_dt, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
+    &#34;&#34;&#34;
+    Step forward in time, `t` seconds while storing any stored variables and
+     checking events every `store_dt` interval. 
+     
+    Raise RuntimeErrors if:
+    
+    * There are no systems added to the simulation
+    * There are no states/ders to be integrated
+    * The solver fails due to numerical instabilities
+    &#34;&#34;&#34;
+    if not self.systems:
+        raise RuntimeError(&#39;Need at least 1 system in the simulation!&#39;)
+
+    # Initial state
+    y0 = collect_states(self._systems)
+    if not y0.size &gt; 0:
+        raise RuntimeError(&#39;Need at least one state/der combination!&#39;)
+
+    dy = np.zeros_like(y0)
+
+    # Systems of ODEs as single func
+    def func(t, y):
+        dispatch_states(y, self.systems)
+
+        for sys in self.systems:
+            sys._step(t)
+
+        collect_ders(dy, self.systems)
+        return dy
+
+    # Setup of solver
+    solver = ode(func)
+    solver.set_integrator(integrator, **kwargs)
+    solver.set_initial_value(y0, t=self._t)
+
+    # Store initial results
+    if self._t == 0:
+        for sys in self.systems:
+            sys.store(self._t)
+
+    # Integrate
+    steps = int(t/store_dt)
+
+    for _ in range(steps):
+
+        # Step
+        solver.integrate(solver.t+store_dt)
+        if not solver.successful():
+            raise RuntimeError(&#39;Solver failed&#39;)
+
+        # Store results
+        for sys in self.systems:
+            sys.store(solver.t)
+
+        # Check events
+        terminate = False
+        for event in self._events:
+            if event(solver.t, solver.y):
+                terminate = True
+                break
+
+        # Bail if any event is True
+        if terminate:
+            break
+        
+    # Update internal state
+    self._t = solver.t
+
+    return solver.t</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="dynode.SystemInterface"><code class="flex name class">
+<span>class <span class="ident">SystemInterface</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract Base Class (ABC) defining the System Interface.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SystemInterface(ABC):
+    &#34;&#34;&#34;
+    Abstract Base Class (ABC) defining the System Interface.
+
+    &#34;&#34;&#34;
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self):
+        super().__init__()
+
+        # Subsystems
+        self._subs = list()
+
+        # I/O
+        self._states = VariableContainer()
+        self._ders = VariableContainer()
+        self._inputs = ParameterContainer()
+        self._outputs = ParameterContainer()
+
+        # Connections
+        self._pre_connections = list()
+        self._post_connections = list()
+
+        # Result
+        self._store_vars = set()
+        self._res = ResultContainer()
+
+    # Properties
+    @property
+    def states(self):
+        &#34;&#34;&#34;
+        VariableContainer of states.
+        
+        Accessible as attributes and/or keys.
+        &#34;&#34;&#34;
+        return self._states
+
+    @property
+    def ders(self):
+        &#34;&#34;&#34;
+        VariableContainer of ders.
+        
+        Accessible as attributes and/or keys.
+        &#34;&#34;&#34;
+        return self._ders
+
+    @property
+    def inputs(self):
+        &#34;&#34;&#34;
+        ParameterContainer of inputs.
+        
+        Accessible as attributes and/or keys.
+        &#34;&#34;&#34;
+        return self._inputs
+
+    @property
+    def outputs(self):
+        &#34;&#34;&#34;
+        ParameterContainer of outputs.
+        
+        Accessible as attributes and/or keys.
+        &#34;&#34;&#34;
+        return self._outputs
+
+    @property
+    def res(self):
+        &#34;&#34;&#34;
+        ResultContainer of stored results.
+        
+        Accessible as attributes and/or keys.
+        &#34;&#34;&#34;
+        return self._res
+
+    # State/der handling
+    def get_states(self):
+
+        states = [sub.get_states() for sub in self._subs]
+        states.append(list(self.states.values()))
+
+        return np.concatenate(
+            states,
+            axis=None
+        )
+
+    def dispatch_states(self, idx, states):
+
+        for sub in self._subs:
+            idx = sub.dispatch_states(idx, states)
+
+        for key, value in self.states.items():
+            jdx = idx + value.size
+            self.states[key][:] = states[idx:jdx].reshape(value.shape)
+            idx = jdx
+
+        return idx
+
+    def get_ders(self, idx, ders):
+
+        for sub in self._subs:
+            idx = sub.get_ders(idx, ders)
+
+        for value in self.ders.values():
+            jdx = idx + value.size
+            ders[idx:jdx] = value.flatten()
+            idx = jdx
+
+        return idx
+
+    # Subsystem API
+    def add_subsystem(self, sub_system) -&gt; None:
+        &#34;&#34;&#34;
+        Add a subsystem to this system.
+        
+        Raises ValueError if sub is a reference to this system.
+        &#34;&#34;&#34;
+        if sub_system is self:
+            raise ValueError(&#39;Cant have self as subsystem to self!&#39;)
+
+        if not sub_system in self._subs:
+            self._subs.append(sub_system)
+
+    # Connection API
+    def add_pre_connection(self, connection_func) -&gt; Callable:
+        &#34;&#34;&#34;
+        Adds a pre-connection callable to this system.
+        
+        `connection_func` is a callable of the form:
+        ```
+        def connection_func(system : SystemInterface, time : int):
+            pass
+        ```
+        
+        Returns a callable that, when called, removes this pre-connection.
+        &#34;&#34;&#34;
+        if connection_func in self._pre_connections:
+            raise ValueError(&#39;This pre-connection has already been added!&#39;)
+
+        self._pre_connections.append(connection_func)
+        return partial(self._pre_connections.remove, connection_func)
+
+    def add_post_connection(self, connection_func) -&gt; Callable:
+        &#34;&#34;&#34;
+        Adds a post-connection callable to this system.
+        
+        `connection_func` is a callable of the form:
+        ```
+        def connection_func(system : SystemInterface, time : int):
+            pass
+        ```
+        
+        Returns a callable that, when called, removes this post-connection.
+        &#34;&#34;&#34;
+        if connection_func in self._post_connections:
+            raise ValueError(&#39;This post-connection has already been added!&#39;)
+
+        self._post_connections.append(connection_func)
+        return partial(self._post_connections.remove, connection_func)
+
+    # Results API
+    def store(self, time):
+
+        for sub in self._subs:
+            sub.store(time)
+
+        for prop, key in self._store_vars:
+            val = deepcopy(getattr(self, prop)[key])                
+            self.res.store(key, val)
+
+        self.res.store(&#39;time&#39;, time)
+
+    def add_store(self, container, key : str) -&gt; None:
+        &#34;&#34;&#34;
+        Adds a variable/parameter (key) part of container
+         to be stored during a simulation.
+        &#34;&#34;&#34;
+        self._store_vars.add((container, key))
+
+    # pylint: disable=protected-access
+    def _step(self, time):
+        # Apply pre-connections
+        for con in self._pre_connections:
+            con(self, time)
+
+        # Recurse over subsystems
+        for sub in self._subs:
+            sub._step(time)
+
+        # Step this system
+        self.do_step(time)
+
+        # Apply post-connections
+        for con in self._post_connections:
+            con(self, time)
+
+    @abstractmethod
+    def do_step(self, time):
+        &#34;&#34;&#34;
+        To be implemented by child classes!
+        &#34;&#34;&#34;
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="dynode.SystemInterface.ders"><code class="name">var <span class="ident">ders</span></code></dt>
+<dd>
+<div class="desc"><p>VariableContainer of ders.</p>
+<p>Accessible as attributes and/or keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ders(self):
+    &#34;&#34;&#34;
+    VariableContainer of ders.
+    
+    Accessible as attributes and/or keys.
+    &#34;&#34;&#34;
+    return self._ders</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.inputs"><code class="name">var <span class="ident">inputs</span></code></dt>
+<dd>
+<div class="desc"><p>ParameterContainer of inputs.</p>
+<p>Accessible as attributes and/or keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def inputs(self):
+    &#34;&#34;&#34;
+    ParameterContainer of inputs.
+    
+    Accessible as attributes and/or keys.
+    &#34;&#34;&#34;
+    return self._inputs</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.outputs"><code class="name">var <span class="ident">outputs</span></code></dt>
+<dd>
+<div class="desc"><p>ParameterContainer of outputs.</p>
+<p>Accessible as attributes and/or keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def outputs(self):
+    &#34;&#34;&#34;
+    ParameterContainer of outputs.
+    
+    Accessible as attributes and/or keys.
+    &#34;&#34;&#34;
+    return self._outputs</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.res"><code class="name">var <span class="ident">res</span></code></dt>
+<dd>
+<div class="desc"><p>ResultContainer of stored results.</p>
+<p>Accessible as attributes and/or keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def res(self):
+    &#34;&#34;&#34;
+    ResultContainer of stored results.
+    
+    Accessible as attributes and/or keys.
+    &#34;&#34;&#34;
+    return self._res</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.states"><code class="name">var <span class="ident">states</span></code></dt>
+<dd>
+<div class="desc"><p>VariableContainer of states.</p>
+<p>Accessible as attributes and/or keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def states(self):
+    &#34;&#34;&#34;
+    VariableContainer of states.
+    
+    Accessible as attributes and/or keys.
+    &#34;&#34;&#34;
+    return self._states</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="dynode.SystemInterface.add_post_connection"><code class="name flex">
+<span>def <span class="ident">add_post_connection</span></span>(<span>self, connection_func) -> Callable</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a post-connection callable to this system.</p>
+<p><code>connection_func</code> is a callable of the form:</p>
+<pre><code>def connection_func(system : SystemInterface, time : int):
+    pass
+</code></pre>
+<p>Returns a callable that, when called, removes this post-connection.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_post_connection(self, connection_func) -&gt; Callable:
+    &#34;&#34;&#34;
+    Adds a post-connection callable to this system.
+    
+    `connection_func` is a callable of the form:
+    ```
+    def connection_func(system : SystemInterface, time : int):
+        pass
+    ```
+    
+    Returns a callable that, when called, removes this post-connection.
+    &#34;&#34;&#34;
+    if connection_func in self._post_connections:
+        raise ValueError(&#39;This post-connection has already been added!&#39;)
+
+    self._post_connections.append(connection_func)
+    return partial(self._post_connections.remove, connection_func)</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.add_pre_connection"><code class="name flex">
+<span>def <span class="ident">add_pre_connection</span></span>(<span>self, connection_func) -> Callable</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a pre-connection callable to this system.</p>
+<p><code>connection_func</code> is a callable of the form:</p>
+<pre><code>def connection_func(system : SystemInterface, time : int):
+    pass
+</code></pre>
+<p>Returns a callable that, when called, removes this pre-connection.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_pre_connection(self, connection_func) -&gt; Callable:
+    &#34;&#34;&#34;
+    Adds a pre-connection callable to this system.
+    
+    `connection_func` is a callable of the form:
+    ```
+    def connection_func(system : SystemInterface, time : int):
+        pass
+    ```
+    
+    Returns a callable that, when called, removes this pre-connection.
+    &#34;&#34;&#34;
+    if connection_func in self._pre_connections:
+        raise ValueError(&#39;This pre-connection has already been added!&#39;)
+
+    self._pre_connections.append(connection_func)
+    return partial(self._pre_connections.remove, connection_func)</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.add_store"><code class="name flex">
+<span>def <span class="ident">add_store</span></span>(<span>self, container, key: str) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a variable/parameter (key) part of container
+to be stored during a simulation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_store(self, container, key : str) -&gt; None:
+    &#34;&#34;&#34;
+    Adds a variable/parameter (key) part of container
+     to be stored during a simulation.
+    &#34;&#34;&#34;
+    self._store_vars.add((container, key))</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.add_subsystem"><code class="name flex">
+<span>def <span class="ident">add_subsystem</span></span>(<span>self, sub_system) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a subsystem to this system.</p>
+<p>Raises ValueError if sub is a reference to this system.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_subsystem(self, sub_system) -&gt; None:
+    &#34;&#34;&#34;
+    Add a subsystem to this system.
+    
+    Raises ValueError if sub is a reference to this system.
+    &#34;&#34;&#34;
+    if sub_system is self:
+        raise ValueError(&#39;Cant have self as subsystem to self!&#39;)
+
+    if not sub_system in self._subs:
+        self._subs.append(sub_system)</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.do_step"><code class="name flex">
+<span>def <span class="ident">do_step</span></span>(<span>self, time)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>To be implemented by child classes!</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def do_step(self, time):
+    &#34;&#34;&#34;
+    To be implemented by child classes!
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#dynode">dynode</a><ul>
+<li><a href="#general">General</a><ul>
+<li><a href="#example-single-van-der-pol-oscillator">Example: Single Van der Pol oscillator</a></li>
+</ul>
+</li>
+<li><a href="#connected-systems">Connected systems</a><ul>
+<li><a href="#example-two-connected-van-der-pol-oscillators">Example: Two connected Van der Pol oscillators</a></li>
+</ul>
+</li>
+<li><a href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="dynode.connect_signals" href="#dynode.connect_signals">connect_signals</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="dynode.Simulation" href="#dynode.Simulation">Simulation</a></code></h4>
+<ul class="">
+<li><code><a title="dynode.Simulation.add_event" href="#dynode.Simulation.add_event">add_event</a></code></li>
+<li><code><a title="dynode.Simulation.add_system" href="#dynode.Simulation.add_system">add_system</a></code></li>
+<li><code><a title="dynode.Simulation.simulate" href="#dynode.Simulation.simulate">simulate</a></code></li>
+<li><code><a title="dynode.Simulation.systems" href="#dynode.Simulation.systems">systems</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="dynode.SystemInterface" href="#dynode.SystemInterface">SystemInterface</a></code></h4>
+<ul class="two-column">
+<li><code><a title="dynode.SystemInterface.add_post_connection" href="#dynode.SystemInterface.add_post_connection">add_post_connection</a></code></li>
+<li><code><a title="dynode.SystemInterface.add_pre_connection" href="#dynode.SystemInterface.add_pre_connection">add_pre_connection</a></code></li>
+<li><code><a title="dynode.SystemInterface.add_store" href="#dynode.SystemInterface.add_store">add_store</a></code></li>
+<li><code><a title="dynode.SystemInterface.add_subsystem" href="#dynode.SystemInterface.add_subsystem">add_subsystem</a></code></li>
+<li><code><a title="dynode.SystemInterface.ders" href="#dynode.SystemInterface.ders">ders</a></code></li>
+<li><code><a title="dynode.SystemInterface.do_step" href="#dynode.SystemInterface.do_step">do_step</a></code></li>
+<li><code><a title="dynode.SystemInterface.inputs" href="#dynode.SystemInterface.inputs">inputs</a></code></li>
+<li><code><a title="dynode.SystemInterface.outputs" href="#dynode.SystemInterface.outputs">outputs</a></code></li>
+<li><code><a title="dynode.SystemInterface.res" href="#dynode.SystemInterface.res">res</a></code></li>
+<li><code><a title="dynode.SystemInterface.states" href="#dynode.SystemInterface.states">states</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
 </html>
