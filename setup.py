@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 
 setup(
     name = "dynode",
-    version = "0.0.1dev0",
+    version = "0.1.0dev0",
     author = "Fredrik Olsson",
     author_email='freol@outlook.com',
     maintainer='Fredrik Olsson',
