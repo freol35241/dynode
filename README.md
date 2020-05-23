@@ -2,8 +2,11 @@
 
 ![](https://github.com/freol35241/dynode/workflows/dynode/badge.svg)
 [![codecov](https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg)](https://codecov.io/gh/freol35241/dynode)
+![docs](https://github.com/freol35241/dynode/workflows/docs/badge.svg)
 
 A framework for modelling and simulation of dynamical systems in the form of ordinary differential equations.
+
+[**--> Documentation <--**](https://freol35241.github.io/dynode/)
 
 **Requires python >= 3.6**
 
