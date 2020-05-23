@@ -16,9 +16,9 @@ def test_VanDerPol(pinned):
 
     sim.simulate(100, 0.1)
 
-    assert(s.states.x.item() == pinned)
-    assert(s.states.y.item() == pinned)
-    assert(np.array(s.res.x).flatten().tolist() == pinned)
+    assert(s.states.x.item() == pinned())
+    assert(s.states.y.item() == pinned())
+    assert(np.array(s.res.x).flatten().tolist() == pinned())
 
 def test_connected_systems():
     sys1 = VanDerPol()
@@ -44,7 +44,7 @@ def test_connected_systems():
 
     assert(np.array_equal(sys1.res.y[1:], sys2.res.mu[1:]))
 
-def test_heirarchical_systems(pinned):
+def test_heirarchical_systems():
 
     sys1 = VanDerPol()
     sys1.states.x = 1
