@@ -56,11 +56,11 @@ def test_event_removal():
     evt = mock.Mock(return_value=False)
     remover = sim.add_event(evt)
 
-    t_end = sim.simulate(3, 0.1)
+    sim.simulate(3, 0.1)
 
     remover()
 
-    t_end = sim.simulate(10, 0.1, t0=t_end)
+    t_end = sim.simulate(10, 0.1)
 
     assert(t_end == pytest.approx(13))
     assert(evt.call_count == 30)

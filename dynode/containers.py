@@ -28,5 +28,14 @@ class VariableContainer(ParameterContainer):
 class ResultContainer(_BaseContainer):
 
     def store(self, key, value):
+        """Store value associated with key.
+
+        Parameters
+        ----------
+        key : str
+            Key name associated with this value
+        value : any
+            Value to be stored
+        """
         self[key] = self.get(key, [])
         self[key].append(value)

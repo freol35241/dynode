@@ -31,22 +31,56 @@ def collect_ders(ders, systems):
         raise RuntimeError('Mismatch in number of states and ders!')
 
 class Simulation:
-
+    """
+    Simulation class representing a set of connected or unconnected
+     dynamical systems that can be stepped forward in time by a
+     numerical integration scheme.
+    """
     def __init__(self):
         self._systems = list()
         self._events = set()
+        self._t = 0
+        
+    @property
+    def systems(self):
+        """
+        List of systems added to this simulation
+        """
+        return self._systems
 
-    def add_system(self, sys):
-        if not sys in self._systems:
-            self._systems.append(sys)
+    def add_system(self, system) -> None:
+        """
+        Adds a system to the simulation
+        """
+        if not system in self._systems:
+            self._systems.append(system)
 
-    def add_event(self, evt):
-        self._events.add(evt)
-        return partial(self._events.remove, evt)
+    def add_event(self, event) -> None:
+        """
+        Adds an event to this simulation.
+        
+        `event` is a callable of the form:
+        ```
+        def event(t : int, states : np.ndarray):
+            pass
+        ```
+        """
+        self._events.add(event)
+        return partial(self._events.remove, event)
 
     #pylint: disable=invalid-name, protected-access
-    def simulate(self, t, store_dt, t0=0, integrator='dopri5', **kwargs):
-        if not self._systems:
+    def simulate(self, t, store_dt, integrator='dopri5', **kwargs) -> int:
+        """
+        Step forward in time, `t` seconds while storing any stored variables and
+         checking events every `store_dt` interval. 
+         
+        Raise RuntimeErrors if:
+        
+        * There are no systems added to the simulation
+        * There are no states/ders to be integrated
+        * The solver fails due to numerical instabilities
+        """
+        if not self.systems:
             raise RuntimeError('Need at least 1 system in the simulation!')
 
         # Initial state
@@ -58,22 +92,23 @@ class Simulation:
 
         # Systems of ODEs as single func
         def func(t, y):
-            dispatch_states(y, self._systems)
+            dispatch_states(y, self.systems)
 
-            for sys in self._systems:
+            for sys in self.systems:
                 sys._step(t)
 
-            collect_ders(dy, self._systems)
+            collect_ders(dy, self.systems)
             return dy
 
         # Setup of solver
         solver = ode(func)
         solver.set_integrator(integrator, **kwargs)
-        solver.set_initial_value(y0, t=t0)
+        solver.set_initial_value(y0, t=self._t)
 
         # Store initial results
-        for sys in self._systems:
-            sys.store(t0)
+        if self._t == 0:
+            for sys in self.systems:
+                sys.store(self._t)
 
         # Integrate
         steps = int(t/store_dt)
@@ -86,18 +121,21 @@ class Simulation:
                 raise RuntimeError('Solver failed')
 
             # Store results
-            for sys in self._systems:
+            for sys in self.systems:
                 sys.store(solver.t)
 
             # Check events
             terminate = False
-            for evt in self._events:
-                if evt(solver.t, solver.y):
+            for event in self._events:
+                if event(solver.t, solver.y):
                     terminate = True
                     break
 
             # Bail if any event is True
             if terminate:
                 break
+            
+        # Update internal state
+        self._t = solver.t
 
         return solver.t
