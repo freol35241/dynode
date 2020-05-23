@@ -1,4 +1,4 @@
-# dynode 
+# dynode
 
 ![](https://github.com/freol35241/dynode/workflows/dynode/badge.svg)
 [![codecov](https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg)](https://codecov.io/gh/freol35241/dynode)
@@ -7,10 +7,12 @@ A framework for modelling and simulation of dynamical systems in the form of ord
 
 **Requires python >= 3.6**
 
+## General
+
 Dynode solves equations of the form ```y' = f(t, y)``` using SciPy's [ode solver](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html) but allows ```f``` to be modelled in a modular, object-oriented fashion using the notions of separate ```Systems``` that expose ```states``` and their corresponding derivatives, ```ders```. ```f``` may then be composed of an arbitraily complex collection of, connected or unconnected, ```Systems```.
 
 
-### Example: Single Van der Pol oscillator
+#### Example: Single Van der Pol oscillator
 A well-known dynamical system is the [Van der Pol oscillator](https://en.wikipedia.org/wiki/Van_der_Pol_oscillator), which is described by a second-order differential equation:
 
 ![Van der Pol 2nd order differential equation](https://wikimedia.org/api/rest_v1/media/math/render/svg/99e33aa1bcd07cd6ce8cf2cf5bd9d630c3b0d21e)
@@ -81,8 +83,9 @@ where ```system``` is a reference to the system this callback is registered to a
 Connections can be either ```pre_step_connections``` or ```post_step_connections``` depending on if the callback should be called prior to or after the ```do_step```-method of the system
 
 
-### Example: Two connected Van der Pol oscillators
+#### Example: Two connected Van der Pol oscillators
 Imagine the situation where you have two oscillators interacting as follows:
+
 * The damping paramater (```mu```) of oscillator 1 is forced by a sinus wave according to ```0.1*sin(0.1*t)```
 * The damping parmeter (```mu```) of oscillator 2 is forced to follow the the state ```y``` of oscillator 1
 
@@ -110,5 +113,9 @@ sim.add_system(sys2)
 
 sim.simulate(100, 0.1)
 ```
+
+## License
+
+Distributed under the terms of the MIT license, `dynode` is free and open source software
 
 
