@@ -61,9 +61,10 @@ class Simulation:
         
         `event` is a callable of the form:
         ```
-        def event(t : int, states : np.ndarray):
-            pass
+        def event(t : int, states : np.ndarray) -> bool:
+            return True or False
         ```
+        The simulation will break early if any such event returns True
         """
         self._events.add(event)
         return partial(self._events.remove, event)
@@ -72,7 +73,9 @@ class Simulation:
     def simulate(self, t, store_dt, integrator='dopri5', **kwargs) -> int:
         """
         Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval. 
+         checking events every `store_dt` interval.
+        
+        Returns the current time of the simulation.
          
         Raise RuntimeErrors if:
         
