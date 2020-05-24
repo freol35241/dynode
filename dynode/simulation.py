@@ -70,10 +70,12 @@ class Simulation:
         return partial(self._events.remove, event)
 
     #pylint: disable=invalid-name, protected-access
-    def simulate(self, t, store_dt, integrator='dopri5', **kwargs) -> int:
+    def simulate(self, t, store_dt, fixed_step=False, integrator='dopri5', **kwargs) -> int:
         """
         Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval.
+         checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+         is also used as the internal step size of the solver, leaving the user in
+         charge of choosing a reasonable step size for the problem at hand.
         
         Returns the current time of the simulation.
          
@@ -105,8 +107,16 @@ class Simulation:
 
         # Setup of solver
         solver = ode(func)
-        solver.set_integrator(integrator, **kwargs)
         solver.set_initial_value(y0, t=self._t)
+        
+        # Setup of integration scheme
+        if fixed_step:
+            kwargs.update({
+                'first_step': store_dt,
+                'rtol': np.inf,
+                'atol': np.inf
+            })
+        solver.set_integrator(integrator, **kwargs)
 
         # Store initial results
         if self._t == 0:

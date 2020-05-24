@@ -1,6 +1,7 @@
 """
 Collection of simple systems for test purposes
 """
+import mock
 from dynode import SystemInterface
 
 class VanDerPol(SystemInterface):
@@ -61,3 +62,13 @@ class ErrorTestSystem(EmptyTestSystem):
         self.states.y = 0
         self.ders.dx = 0
         self.ders.dy = 0
+        
+class MockVanDerPol(VanDerPol):
+    
+    def __init__(self):
+        super().__init__()
+        self.mock = mock.Mock()
+        
+    def do_step(self, time):
+        self.mock(time)
+        super().do_step(time)

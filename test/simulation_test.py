@@ -4,7 +4,7 @@ import numpy as np
 
 from dynode.simulation import Simulation as Sim
 
-from test_systems import EmptyTestSystem, VanDerPol, ErrorTestSystem
+from test_systems import EmptyTestSystem, VanDerPol, ErrorTestSystem, MockVanDerPol
 
 def test_empty_simulation():
     sim = Sim()
@@ -73,3 +73,13 @@ def test_states_ders_mismatch():
     with pytest.raises(ValueError):
         sim.simulate(10, 0.1)
 
+def test_fixed_step_size():
+    sim = Sim()
+
+    s = MockVanDerPol()
+    s.states.x = 1
+    sim.add_system(s)
+
+    sim.simulate(3, 0.1, fixed_step=True)
+    
+    assert(s.mock.call_count == 3/0.1*7)
