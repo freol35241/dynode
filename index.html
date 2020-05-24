@@ -255,9 +255,10 @@ numerical integration scheme.</p></div>
         
         `event` is a callable of the form:
         ```
-        def event(t : int, states : np.ndarray):
-            pass
+        def event(t : int, states : np.ndarray) -&gt; bool:
+            return True or False
         ```
+        The simulation will break early if any such event returns True
         &#34;&#34;&#34;
         self._events.add(event)
         return partial(self._events.remove, event)
@@ -266,7 +267,9 @@ numerical integration scheme.</p></div>
     def simulate(self, t, store_dt, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
         &#34;&#34;&#34;
         Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval. 
+         checking events every `store_dt` interval.
+        
+        Returns the current time of the simulation.
          
         Raise RuntimeErrors if:
         
@@ -360,9 +363,10 @@ def systems(self):
 <dd>
 <div class="desc"><p>Adds an event to this simulation.</p>
 <p><code>event</code> is a callable of the form:</p>
-<pre><code>def event(t : int, states : np.ndarray):
-    pass
-</code></pre></div>
+<pre><code>def event(t : int, states : np.ndarray) -&gt; bool:
+    return True or False
+</code></pre>
+<p>The simulation will break early if any such event returns True</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -373,9 +377,10 @@ def systems(self):
     
     `event` is a callable of the form:
     ```
-    def event(t : int, states : np.ndarray):
-        pass
+    def event(t : int, states : np.ndarray) -&gt; bool:
+        return True or False
     ```
+    The simulation will break early if any such event returns True
     &#34;&#34;&#34;
     self._events.add(event)
     return partial(self._events.remove, event)</code></pre>
@@ -403,7 +408,8 @@ def systems(self):
 </code></dt>
 <dd>
 <div class="desc"><p>Step forward in time, <code>t</code> seconds while storing any stored variables and
-checking events every <code>store_dt</code> interval. </p>
+checking events every <code>store_dt</code> interval.</p>
+<p>Returns the current time of the simulation.</p>
 <p>Raise RuntimeErrors if:</p>
 <ul>
 <li>There are no systems added to the simulation</li>
@@ -417,7 +423,9 @@ checking events every <code>store_dt</code> interval. </p>
 <pre><code class="python">def simulate(self, t, store_dt, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
     &#34;&#34;&#34;
     Step forward in time, `t` seconds while storing any stored variables and
-     checking events every `store_dt` interval. 
+     checking events every `store_dt` interval.
+    
+    Returns the current time of the simulation.
      
     Raise RuntimeErrors if:
     
