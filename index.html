@@ -264,10 +264,12 @@ numerical integration scheme.</p></div>
         return partial(self._events.remove, event)
 
     #pylint: disable=invalid-name, protected-access
-    def simulate(self, t, store_dt, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
+    def simulate(self, t, store_dt, fixed_step=False, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
         &#34;&#34;&#34;
         Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval.
+         checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+         is also used as the internal step size of the solver, leaving the user in
+         charge of choosing a reasonable step size for the problem at hand.
         
         Returns the current time of the simulation.
          
@@ -299,8 +301,16 @@ numerical integration scheme.</p></div>
 
         # Setup of solver
         solver = ode(func)
-        solver.set_integrator(integrator, **kwargs)
         solver.set_initial_value(y0, t=self._t)
+        
+        # Setup of integration scheme
+        if fixed_step:
+            kwargs.update({
+                &#39;first_step&#39;: store_dt,
+                &#39;rtol&#39;: np.inf,
+                &#39;atol&#39;: np.inf
+            })
+        solver.set_integrator(integrator, **kwargs)
 
         # Store initial results
         if self._t == 0:
@@ -404,11 +414,13 @@ def systems(self):
 </details>
 </dd>
 <dt id="dynode.Simulation.simulate"><code class="name flex">
-<span>def <span class="ident">simulate</span></span>(<span>self, t, store_dt, integrator='dopri5', **kwargs) -> int</span>
+<span>def <span class="ident">simulate</span></span>(<span>self, t, store_dt, fixed_step=False, integrator='dopri5', **kwargs) -> int</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Step forward in time, <code>t</code> seconds while storing any stored variables and
-checking events every <code>store_dt</code> interval.</p>
+checking events every <code>store_dt</code> interval. If <code>fixed_step=True</code>, <code>store_dt</code>
+is also used as the internal step size of the solver, leaving the user in
+charge of choosing a reasonable step size for the problem at hand.</p>
 <p>Returns the current time of the simulation.</p>
 <p>Raise RuntimeErrors if:</p>
 <ul>
@@ -420,10 +432,12 @@ checking events every <code>store_dt</code> interval.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def simulate(self, t, store_dt, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
+<pre><code class="python">def simulate(self, t, store_dt, fixed_step=False, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
     &#34;&#34;&#34;
     Step forward in time, `t` seconds while storing any stored variables and
-     checking events every `store_dt` interval.
+     checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+     is also used as the internal step size of the solver, leaving the user in
+     charge of choosing a reasonable step size for the problem at hand.
     
     Returns the current time of the simulation.
      
@@ -455,8 +469,16 @@ checking events every <code>store_dt</code> interval.</p>
 
     # Setup of solver
     solver = ode(func)
-    solver.set_integrator(integrator, **kwargs)
     solver.set_initial_value(y0, t=self._t)
+    
+    # Setup of integration scheme
+    if fixed_step:
+        kwargs.update({
+            &#39;first_step&#39;: store_dt,
+            &#39;rtol&#39;: np.inf,
+            &#39;atol&#39;: np.inf
+        })
+    solver.set_integrator(integrator, **kwargs)
 
     # Store initial results
     if self._t == 0:
