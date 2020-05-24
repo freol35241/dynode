@@ -73,7 +73,9 @@ class Simulation:
     def simulate(self, t, store_dt, fixed_step=False, integrator='dopri5', **kwargs) -> int:
         """
         Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval.
+         checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+         is also used as the internal step size of the solver, leaving the user in
+         charge of choosing a reasonable step size for the problem at hand.
         
         Returns the current time of the simulation.
          
