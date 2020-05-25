@@ -6,7 +6,7 @@
 
 A framework for modelling and simulation of dynamical systems in the form of ordinary differential equations.
 
-[**--> Documentation <--**](https://freol35241.github.io/dynode/)
+[**--> Docs <--**](https://freol35241.github.io/dynode/)
 
 **Requires python >= 3.6**
 
