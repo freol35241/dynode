@@ -6,7 +6,7 @@ from dynode.containers import (ParameterContainer, VariableContainer,
     ResultContainer)
 
 @pytest.mark.parametrize('cont', [ParameterContainer, 
-    VariableContainer, ResultContainer])
+    VariableContainer])
 def test_attribute_access(cont):
     c = cont()
     value = np.array([1,2,3])
@@ -22,7 +22,7 @@ def test_attribute_creation(cont):
     np.array_equal(value, c['test'])
 
 @pytest.mark.parametrize('cont', [ParameterContainer, 
-    VariableContainer, ResultContainer])
+    VariableContainer])
 def test_attribute_access_error(cont):
     c = cont()
     with pytest.raises(KeyError):
@@ -33,8 +33,8 @@ def test_type_enforcement_scalar():
 
     test_scalar = 10
     c['test'] = test_scalar
-    assert(isinstance(c.test, np.ndarray))
-    assert(c.test[0] == test_scalar)
+    assert(isinstance(c.test, float))
+    assert(c.test == test_scalar)
 
 def test_type_enforcement_list():
     c = VariableContainer()
@@ -73,5 +73,5 @@ def test_result_storing():
     for i in range(N):
         c.store('test', [i,i,i])
 
-    assert(len(c.test) == N)
-    assert([N-1,N-1,N-1] == c.test[-1])
+    assert(len(c['test']) == N)
+    assert([N-1,N-1,N-1] == c['test'][-1])

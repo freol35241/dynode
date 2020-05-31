@@ -7,6 +7,7 @@ from copy import deepcopy
 from functools import partial
 from abc import ABC, abstractmethod
 from typing import Callable
+from operator import attrgetter
 
 import numpy as np
 
@@ -176,18 +177,19 @@ class SystemInterface(ABC):
         for sub in self._subs:
             sub.store(time)
 
-        for prop, key in self._store_vars:
-            val = deepcopy(getattr(self, prop)[key])                
-            self.res.store(key, val)
+        for attr_str, key_str in self._store_vars:
+            val = deepcopy(attrgetter(attr_str)(self))
+            self.res.store(key_str, val)
 
         self.res.store('time', time)
 
-    def add_store(self, container, key : str) -> None:
+    def add_store(self, attribute : str, key=None) -> None:
         """
-        Adds a variable/parameter (key) part of container
+        Adds an attribute or subattribute of this system
          to be stored during a simulation.
         """
-        self._store_vars.add((container, key))
+        attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
+        self._store_vars.add((attribute, key or attribute))
 
     # pylint: disable=protected-access
     def _step(self, time):

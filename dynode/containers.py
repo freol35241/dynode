@@ -4,12 +4,10 @@ from collections.abc import Sequence
 
 import numpy as np
 
-class _BaseContainer(dict):
-
+class ParameterContainer(dict):
+    
     def __getattr__(self, *args, **kwargs):
         return self.__getitem__(*args, **kwargs)
-
-class ParameterContainer(_BaseContainer):
 
     def __setattr__(self, *args, **kwargs):
         return self.__setitem__(*args, **kwargs)
@@ -21,11 +19,20 @@ class VariableContainer(ParameterContainer):
             value = np.atleast_1d(value)
 
         if not isinstance(value, (Sequence, np.ndarray)):
-            raise TypeError('States/Ders must be lists or np.ndarrays!')
+            raise TypeError('States/Ders must be scalars, lists or np.ndarrays!')
 
         super().__setitem__(key, np.array(value, dtype=float))
+        
+    def __getattr__(self, *args, **kwargs):
+        array = self.__getitem__(*args, **kwargs)
+        
+        try:
+            return array.item()
+        except ValueError:
+            return array
+        
 
-class ResultContainer(_BaseContainer):
+class ResultContainer(dict):
 
     def store(self, key, value):
         """Store value associated with key.
