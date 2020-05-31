@@ -195,7 +195,7 @@ class SystemInterface(ABC):
         Raises `AttributeError` if attribute is non-existing
         """
         attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
-        self._store_vars.add((attribute, key or attribute))
+        self._store_vars.add((attribute, alias or attribute))
 
     # pylint: disable=protected-access
     def _step(self, time):
