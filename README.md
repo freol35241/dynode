@@ -1,5 +1,6 @@
 # dynode
 
+[![PyPI version](https://badge.fury.io/py/dynode.svg)](https://badge.fury.io/py/dynode)
 ![](https://github.com/freol35241/dynode/workflows/dynode/badge.svg)
 [![codecov](https://codecov.io/gh/freol35241/dynode/branch/master/graph/badge.svg)](https://codecov.io/gh/freol35241/dynode)
 ![docs](https://github.com/freol35241/dynode/workflows/docs/badge.svg)
