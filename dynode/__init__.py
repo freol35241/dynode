@@ -33,7 +33,7 @@ def connect_signals(container1, key1, container2, key2) -> Callable:
     """    
     # pylint: disable=unused-argument
     def connect(*args, **kwargs):
-        container2[key2] = container1[key1]
+        setattr(container2, key2, getattr(container1, key1))
     return connect
 
 __all__ = [

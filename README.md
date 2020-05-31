@@ -60,8 +60,8 @@ And may be simulated like this:
 from dynode.simulation import Simulation
 
 sys = VanDerPol()
-sys.add_store('states', 'x')
-sys.add_store('states', 'y')
+sys.add_store('states.x', alias='x')
+sys.add_store('states.y', alias='y')
 
 sim = Simulation()
 sim.add_system(sys)
@@ -70,8 +70,8 @@ sys.states.x = 1
 sim.simulate(100, 0.1)
 
 import matplotlib.pyplot as plt
-plt.plot(sys.res.time, sys.res.x)
-plt.plot(sys.res.time, sys.res.y)
+plt.plot(sys.res.time, sys.res['x'])
+plt.plot(sys.res.time, sys.res['y'])
 plt.show()
 ```
 

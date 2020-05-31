@@ -109,5 +109,36 @@ def test_post_connection_add_twice():
 
     with pytest.raises(ValueError):
         s.add_post_connection(cb)
+        
+def test_storing_non_existing():
+    
+    s = VanDerPol()
+    
+    with pytest.raises(AttributeError):
+        s.add_store('mupp.muppet')
+
+def test_storing_existing(pinned):
+    
+    s = VanDerPol()
+    
+    s.add_store('inputs.mu')
+    
+    s.store(0)
+    s.inputs.mu = 8
+    s.store(1)
+    
+    assert(s.res['inputs.mu'] == pinned)
+    
+def test_storing_existing_with_other_name(pinned):
+    
+    s = VanDerPol()
+    
+    s.add_store('inputs.mu', 'mu')
+    
+    s.store(0)
+    s.inputs.mu = 8
+    s.store(1)
+    
+    assert(s.res['mu'] == pinned)
 
     
