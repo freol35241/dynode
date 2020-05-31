@@ -66,8 +66,8 @@ class VanDerPol(SystemInterface):
 <pre><code>from dynode.simulation import Simulation
 
 sys = VanDerPol()
-sys.add_store('states', 'x')
-sys.add_store('states', 'y')
+sys.add_store('states.x', alias='x')
+sys.add_store('states.y', alias='y')
 
 sim = Simulation()
 sim.add_system(sys)
@@ -76,8 +76,8 @@ sys.states.x = 1
 sim.simulate(100, 0.1)
 
 import matplotlib.pyplot as plt
-plt.plot(sys.res.time, sys.res.x)
-plt.plot(sys.res.time, sys.res.y)
+plt.plot(sys.res.time, sys.res['x'])
+plt.plot(sys.res.time, sys.res['y'])
 plt.show()
 </code></pre>
 <h2 id="connected-systems">Connected systems</h2>
@@ -157,7 +157,7 @@ def connect_signals(container1, key1, container2, key2) -&gt; Callable:
     &#34;&#34;&#34;    
     # pylint: disable=unused-argument
     def connect(*args, **kwargs):
-        container2[key2] = container1[key1]
+        setattr(container2, key2, getattr(container1, key1))
     return connect
 
 __all__ = [
@@ -204,7 +204,7 @@ post-step connection.</p>
     &#34;&#34;&#34;    
     # pylint: disable=unused-argument
     def connect(*args, **kwargs):
-        container2[key2] = container1[key1]
+        setattr(container2, key2, getattr(container1, key1))
     return connect</code></pre>
 </details>
 </dd>
@@ -559,7 +559,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         &#34;&#34;&#34;
         VariableContainer of states.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         &#34;&#34;&#34;
         return self._states
 
@@ -568,7 +568,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         &#34;&#34;&#34;
         VariableContainer of ders.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         &#34;&#34;&#34;
         return self._ders
 
@@ -577,7 +577,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         &#34;&#34;&#34;
         ParameterContainer of inputs.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         &#34;&#34;&#34;
         return self._inputs
 
@@ -586,7 +586,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         &#34;&#34;&#34;
         ParameterContainer of outputs.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         &#34;&#34;&#34;
         return self._outputs
 
@@ -595,7 +595,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         &#34;&#34;&#34;
         ResultContainer of stored results.
         
-        Accessible as attributes and/or keys.
+        Accessible as keys.
         &#34;&#34;&#34;
         return self._res
 
@@ -639,7 +639,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         &#34;&#34;&#34;
         Add a subsystem to this system.
         
-        Raises ValueError if sub is a reference to this system.
+        Raises `ValueError` if sub is a reference to this system.
         &#34;&#34;&#34;
         if sub_system is self:
             raise ValueError(&#39;Cant have self as subsystem to self!&#39;)
@@ -690,18 +690,25 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         for sub in self._subs:
             sub.store(time)
 
-        for prop, key in self._store_vars:
-            val = deepcopy(getattr(self, prop)[key])                
-            self.res.store(key, val)
+        for attr_str, key_str in self._store_vars:
+            val = deepcopy(attrgetter(attr_str)(self))
+            self.res.store(key_str, val)
 
         self.res.store(&#39;time&#39;, time)
 
-    def add_store(self, container, key : str) -&gt; None:
+    def add_store(self, attribute : str, alias=None) -&gt; None:
         &#34;&#34;&#34;
-        Adds a variable/parameter (key) part of container
+        Adds an attribute or subattribute of this system
          to be stored during a simulation.
+         
+        `attribute` is a string of the form `x.y.z`
+        
+        `alias` is optionally a string under which the stored attribute will be available at in the result.
+        
+        Raises `AttributeError` if attribute is non-existing
         &#34;&#34;&#34;
-        self._store_vars.add((container, key))
+        attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
+        self._store_vars.add((attribute, alias or attribute))
 
     # pylint: disable=protected-access
     def _step(self, time):
@@ -736,7 +743,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 <dt id="dynode.SystemInterface.ders"><code class="name">var <span class="ident">ders</span></code></dt>
 <dd>
 <div class="desc"><p>VariableContainer of ders.</p>
-<p>Accessible as attributes and/or keys.</p></div>
+<p>Accessible as attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -746,7 +753,7 @@ def ders(self):
     &#34;&#34;&#34;
     VariableContainer of ders.
     
-    Accessible as attributes and/or keys.
+    Accessible as attributes.
     &#34;&#34;&#34;
     return self._ders</code></pre>
 </details>
@@ -754,7 +761,7 @@ def ders(self):
 <dt id="dynode.SystemInterface.inputs"><code class="name">var <span class="ident">inputs</span></code></dt>
 <dd>
 <div class="desc"><p>ParameterContainer of inputs.</p>
-<p>Accessible as attributes and/or keys.</p></div>
+<p>Accessible as attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -764,7 +771,7 @@ def inputs(self):
     &#34;&#34;&#34;
     ParameterContainer of inputs.
     
-    Accessible as attributes and/or keys.
+    Accessible as attributes.
     &#34;&#34;&#34;
     return self._inputs</code></pre>
 </details>
@@ -772,7 +779,7 @@ def inputs(self):
 <dt id="dynode.SystemInterface.outputs"><code class="name">var <span class="ident">outputs</span></code></dt>
 <dd>
 <div class="desc"><p>ParameterContainer of outputs.</p>
-<p>Accessible as attributes and/or keys.</p></div>
+<p>Accessible as attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -782,7 +789,7 @@ def outputs(self):
     &#34;&#34;&#34;
     ParameterContainer of outputs.
     
-    Accessible as attributes and/or keys.
+    Accessible as attributes.
     &#34;&#34;&#34;
     return self._outputs</code></pre>
 </details>
@@ -790,7 +797,7 @@ def outputs(self):
 <dt id="dynode.SystemInterface.res"><code class="name">var <span class="ident">res</span></code></dt>
 <dd>
 <div class="desc"><p>ResultContainer of stored results.</p>
-<p>Accessible as attributes and/or keys.</p></div>
+<p>Accessible as keys.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -800,7 +807,7 @@ def res(self):
     &#34;&#34;&#34;
     ResultContainer of stored results.
     
-    Accessible as attributes and/or keys.
+    Accessible as keys.
     &#34;&#34;&#34;
     return self._res</code></pre>
 </details>
@@ -808,7 +815,7 @@ def res(self):
 <dt id="dynode.SystemInterface.states"><code class="name">var <span class="ident">states</span></code></dt>
 <dd>
 <div class="desc"><p>VariableContainer of states.</p>
-<p>Accessible as attributes and/or keys.</p></div>
+<p>Accessible as attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -818,7 +825,7 @@ def states(self):
     &#34;&#34;&#34;
     VariableContainer of states.
     
-    Accessible as attributes and/or keys.
+    Accessible as attributes.
     &#34;&#34;&#34;
     return self._states</code></pre>
 </details>
@@ -893,21 +900,31 @@ def states(self):
 </details>
 </dd>
 <dt id="dynode.SystemInterface.add_store"><code class="name flex">
-<span>def <span class="ident">add_store</span></span>(<span>self, container, key: str) -> NoneType</span>
+<span>def <span class="ident">add_store</span></span>(<span>self, attribute: str, alias=None) -> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Adds a variable/parameter (key) part of container
-to be stored during a simulation.</p></div>
+<div class="desc"><p>Adds an attribute or subattribute of this system
+to be stored during a simulation.</p>
+<p><code>attribute</code> is a string of the form <code>x.y.z</code></p>
+<p><code>alias</code> is optionally a string under which the stored attribute will be available at in the result.</p>
+<p>Raises <code>AttributeError</code> if attribute is non-existing</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_store(self, container, key : str) -&gt; None:
+<pre><code class="python">def add_store(self, attribute : str, alias=None) -&gt; None:
     &#34;&#34;&#34;
-    Adds a variable/parameter (key) part of container
+    Adds an attribute or subattribute of this system
      to be stored during a simulation.
+     
+    `attribute` is a string of the form `x.y.z`
+    
+    `alias` is optionally a string under which the stored attribute will be available at in the result.
+    
+    Raises `AttributeError` if attribute is non-existing
     &#34;&#34;&#34;
-    self._store_vars.add((container, key))</code></pre>
+    attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
+    self._store_vars.add((attribute, alias or attribute))</code></pre>
 </details>
 </dd>
 <dt id="dynode.SystemInterface.add_subsystem"><code class="name flex">
@@ -915,7 +932,7 @@ to be stored during a simulation.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Add a subsystem to this system.</p>
-<p>Raises ValueError if sub is a reference to this system.</p></div>
+<p>Raises <code>ValueError</code> if sub is a reference to this system.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -924,7 +941,7 @@ to be stored during a simulation.</p></div>
     &#34;&#34;&#34;
     Add a subsystem to this system.
     
-    Raises ValueError if sub is a reference to this system.
+    Raises `ValueError` if sub is a reference to this system.
     &#34;&#34;&#34;
     if sub_system is self:
         raise ValueError(&#39;Cant have self as subsystem to self!&#39;)
