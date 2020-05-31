@@ -9,24 +9,24 @@ from dynode.simulation import Simulation as Sim
 def test_VanDerPol(pinned):
     s = VanDerPol()
     s.states.x = 1
-    s.add_store('states', 'x')
+    s.add_store('states.x')
 
     sim = Sim()
     sim.add_system(s)
 
     sim.simulate(100, 0.1)
 
-    assert(s.states.x.item() == pinned())
-    assert(s.states.y.item() == pinned())
-    assert(np.array(s.res.x).flatten().tolist() == pinned())
+    assert(s.states.x == pinned())
+    assert(s.states.y == pinned())
+    assert(s.res['states.x'] == pinned())
 
 def test_connected_systems():
     sys1 = VanDerPol()
     sys1.states.x = 1
-    sys1.add_store('states', 'y')
+    sys1.add_store('states.y', 'y')
 
     sys2 = VanDerPol()
-    sys2.add_store('inputs', 'mu')
+    sys2.add_store('inputs.mu', 'mu')
 
     # Simple connection
     sys1.add_post_connection(connect_signals(sys1.states, 'y', sys2.inputs, 'mu'))
@@ -42,25 +42,25 @@ def test_connected_systems():
 
     sim.simulate(100, 0.1)
 
-    assert(np.array_equal(sys1.res.y[1:], sys2.res.mu[1:]))
+    assert(np.array_equal(sys1.res['y'][1:], sys2.res['mu'][1:]))
 
 def test_heirarchical_systems():
 
     sys1 = VanDerPol()
     sys1.states.x = 1
-    sys1.add_store('states', 'y')
+    sys1.add_store('states.y')
 
     sys11 = VanDerPol()
     sys11.states.x = 1
-    sys11.add_store('states', 'y')
+    sys11.add_store('states.y')
 
     sys2 = VanDerPol()
     sys2.states.x = 1
-    sys2.add_store('inputs', 'mu')
+    sys2.add_store('inputs.mu')
 
     sys22 = VanDerPol()
     sys22.states.x = 1
-    sys22.add_store('inputs', 'mu')
+    sys22.add_store('inputs.mu')
 
     # Simple connection
     sys1.add_post_connection(connect_signals(sys1.states, 'y', sys2.inputs, 'mu'))
@@ -80,7 +80,7 @@ def test_heirarchical_systems():
 
     sim.simulate(100, 0.1)
 
-    assert(np.array_equal(sys1.states.y, sys11.states.y))
+    assert(np.array_equal(sys2.states.y, sys22.states.y))
 
 
 def test_1DOF_MassSpring(pinned):
@@ -93,15 +93,15 @@ def test_1DOF_MassSpring(pinned):
 
     # Initial state
     s.states.x = 10
-    s.add_store('states', 'x')
+    s.add_store('states.x', 'x')
 
     sim = Sim()
     sim.add_system(s)
 
     sim.simulate(20, 0.01)
     
-    upper = max(s.res.x[1:]).item()
-    lower = min(s.res.x[1:]).item()
+    upper = max(s.res['x'][1:])
+    lower = min(s.res['x'][1:])
 
     assert(upper == pinned(rel=0.001))
     assert(lower == pinned(rel=0.001))
