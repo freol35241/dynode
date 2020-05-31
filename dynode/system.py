@@ -46,7 +46,7 @@ class SystemInterface(ABC):
         """
         VariableContainer of states.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         """
         return self._states
 
@@ -55,7 +55,7 @@ class SystemInterface(ABC):
         """
         VariableContainer of ders.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         """
         return self._ders
 
@@ -64,7 +64,7 @@ class SystemInterface(ABC):
         """
         ParameterContainer of inputs.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         """
         return self._inputs
 
@@ -73,7 +73,7 @@ class SystemInterface(ABC):
         """
         ParameterContainer of outputs.
         
-        Accessible as attributes and/or keys.
+        Accessible as attributes.
         """
         return self._outputs
 
@@ -82,7 +82,7 @@ class SystemInterface(ABC):
         """
         ResultContainer of stored results.
         
-        Accessible as attributes and/or keys.
+        Accessible as keys.
         """
         return self._res
 
@@ -126,7 +126,7 @@ class SystemInterface(ABC):
         """
         Add a subsystem to this system.
         
-        Raises ValueError if sub is a reference to this system.
+        Raises `ValueError` if sub is a reference to this system.
         """
         if sub_system is self:
             raise ValueError('Cant have self as subsystem to self!')
@@ -183,10 +183,16 @@ class SystemInterface(ABC):
 
         self.res.store('time', time)
 
-    def add_store(self, attribute : str, key=None) -> None:
+    def add_store(self, attribute : str, alias=None) -> None:
         """
         Adds an attribute or subattribute of this system
          to be stored during a simulation.
+         
+        `attribute` is a string of the form `x.y.z`
+        
+        `alias` is optionally a string under which the stored attribute will be available at in the result.
+        
+        Raises `AttributeError` if attribute is non-existing
         """
         attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
         self._store_vars.add((attribute, key or attribute))
