@@ -16,9 +16,9 @@ def test_VanDerPol(pinned):
 
     sim.simulate(100, 0.1)
 
-    assert(s.states.x == pinned())
-    assert(s.states.y == pinned())
-    assert(s.res['states.x'] == pinned())
+    assert(s.states.x == pinned.approx())
+    assert(s.states.y == pinned.approx())
+    assert(s.res['states.x'] == pinned.approx())
 
 def test_connected_systems():
     sys1 = VanDerPol()
@@ -103,5 +103,5 @@ def test_1DOF_MassSpring(pinned):
     upper = max(s.res['x'][1:])
     lower = min(s.res['x'][1:])
 
-    assert(upper == pinned(rel=0.001))
-    assert(lower == pinned(rel=0.001))
+    assert(upper == pinned.approx(rel=0.001))
+    assert(lower == pinned.approx(rel=0.001))
