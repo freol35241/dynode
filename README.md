@@ -29,7 +29,7 @@ Rewriting it to a system of ordinary differential equations yields:
 
 In dynode, a Van der Pol ```system``` may be modelled as:
 
-```
+```python
 from dynode import SystemInterface
 
 class VanDerPol(SystemInterface):
@@ -56,7 +56,7 @@ class VanDerPol(SystemInterface):
 
 And may be simulated like this:
 
-```
+```python
 from dynode.simulation import Simulation
 
 sys = VanDerPol()
@@ -78,7 +78,7 @@ plt.show()
 ## Connected systems
 Dynode systems accepts ```connections``` as callbacks registered to a system. The callback signature looks like:
 
-```
+```python
 def connection_callback(system, time):
     pass
 ```
@@ -94,7 +94,7 @@ Imagine the situation where you have two oscillators interacting as follows:
 * The damping parmeter (```mu```) of oscillator 2 is forced to follow the the state ```y``` of oscillator 1
 
 In dynode, the above scenario can be described and simulated as:
-```
+```python
 from dynode import connect_signals
 
 sys1 = VanDerPol()
