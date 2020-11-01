@@ -79,8 +79,8 @@ sys.states.x = 1
 sim.simulate(100, 0.1)
 
 import matplotlib.pyplot as plt
-plt.plot(sys.res.time, sys.res['x'])
-plt.plot(sys.res.time, sys.res['y'])
+plt.plot(sys.res['time'], sys.res['x'])
+plt.plot(sys.res['time'], sys.res['y'])
 plt.show()
 </code></pre>
 <h2 id="connected-systems">Connected systems</h2>
@@ -305,14 +305,19 @@ numerical integration scheme.</p></div>
         # Setup of solver
         solver = ode(func)
         solver.set_initial_value(y0, t=self._t)
+
+        #Try with a large step from the beginning
+        kwargs.update({
+            &#39;first_step&#39;: store_dt
+        })
         
-        # Setup of integration scheme
+        # Fixed step size workaround
         if fixed_step:
             kwargs.update({
-                &#39;first_step&#39;: store_dt,
-                &#39;rtol&#39;: np.inf,
                 &#39;atol&#39;: np.inf
             })
+
+        # Setup of integration scheme
         solver.set_integrator(integrator, **kwargs)
 
         # Store initial results
@@ -473,14 +478,19 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     # Setup of solver
     solver = ode(func)
     solver.set_initial_value(y0, t=self._t)
+
+    #Try with a large step from the beginning
+    kwargs.update({
+        &#39;first_step&#39;: store_dt
+    })
     
-    # Setup of integration scheme
+    # Fixed step size workaround
     if fixed_step:
         kwargs.update({
-            &#39;first_step&#39;: store_dt,
-            &#39;rtol&#39;: np.inf,
             &#39;atol&#39;: np.inf
         })
+
+    # Setup of integration scheme
     solver.set_integrator(integrator, **kwargs)
 
     # Store initial results
