@@ -42,7 +42,7 @@ ordinary differential equations.</p>
 <p><img alt="Van der Pol ODE1" src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2e9748620372632fc912d764f4589a32f0626658"></p>
 <p><img alt="Van der Pol ODE2" src="https://wikimedia.org/api/rest_v1/media/math/render/svg/82fff2145f98d0281f9c22c97fe6c625386d2b8e"></p>
 <p>In dynode, a Van der Pol <code>system</code> may be modelled as:</p>
-<pre><code class="python">from dynode import SystemInterface
+<pre><code class="language-python">from dynode import SystemInterface
 
 class VanDerPol(SystemInterface):
 
@@ -66,7 +66,7 @@ class VanDerPol(SystemInterface):
         self.ders.dy = mu*(1-x**2)*y - x
 </code></pre>
 <p>And may be simulated like this:</p>
-<pre><code class="python">from dynode.simulation import Simulation
+<pre><code class="language-python">from dynode.simulation import Simulation
 
 sys = VanDerPol()
 sys.add_store('states.x', alias='x')
@@ -85,7 +85,7 @@ plt.show()
 </code></pre>
 <h2 id="connected-systems">Connected systems</h2>
 <p>Dynode systems accepts <code>connections</code> as callbacks registered to a system. The callback signature looks like:</p>
-<pre><code class="python">def connection_callback(system, time):
+<pre><code class="language-python">def connection_callback(system, time):
     pass
 </code></pre>
 <p>where <code>system</code> is a reference to the system this callback is registered to and <code>time</code> is the current time in the simulation.</p>
@@ -97,7 +97,7 @@ plt.show()
 <li>The damping parmeter (<code>mu</code>) of oscillator 2 is forced to follow the the state <code>y</code> of oscillator 1</li>
 </ul>
 <p>In dynode, the above scenario can be described and simulated as:</p>
-<pre><code class="python">from dynode import connect_signals
+<pre><code class="language-python">from dynode import connect_signals
 
 sys1 = VanDerPol()
 sys1.states.x = 1
@@ -715,13 +715,13 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 
     # pylint: disable=protected-access
     def _step(self, time):
-        # Apply pre-connections
-        for con in self._pre_connections:
-            con(self, time)
-
         # Recurse over subsystems
         for sub in self._subs:
             sub._step(time)
+            
+        # Apply pre-connections
+        for con in self._pre_connections:
+            con(self, time)
 
         # Step this system
         self.do_step(time)
