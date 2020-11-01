@@ -70,8 +70,8 @@ sys.states.x = 1
 sim.simulate(100, 0.1)
 
 import matplotlib.pyplot as plt
-plt.plot(sys.res.time, sys.res['x'])
-plt.plot(sys.res.time, sys.res['y'])
+plt.plot(sys.res['time'], sys.res['x'])
+plt.plot(sys.res['time'], sys.res['y'])
 plt.show()
 ```
 
