@@ -108,14 +108,19 @@ class Simulation:
         # Setup of solver
         solver = ode(func)
         solver.set_initial_value(y0, t=self._t)
+
+        #Try with a large step from the beginning
+        kwargs.update({
+            'first_step': store_dt
+        })
         
-        # Setup of integration scheme
+        # Fixed step size workaround
         if fixed_step:
             kwargs.update({
-                'first_step': store_dt,
-                'rtol': np.inf,
                 'atol': np.inf
             })
+
+        # Setup of integration scheme
         solver.set_integrator(integrator, **kwargs)
 
         # Store initial results
