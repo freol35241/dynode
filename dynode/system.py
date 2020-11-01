@@ -199,13 +199,13 @@ class SystemInterface(ABC):
 
     # pylint: disable=protected-access
     def _step(self, time):
-        # Apply pre-connections
-        for con in self._pre_connections:
-            con(self, time)
-
         # Recurse over subsystems
         for sub in self._subs:
             sub._step(time)
+            
+        # Apply pre-connections
+        for con in self._pre_connections:
+            con(self, time)
 
         # Step this system
         self.do_step(time)
