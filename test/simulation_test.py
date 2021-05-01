@@ -2,7 +2,7 @@ import pytest
 import mock
 import numpy as np
 
-from dynode.simulation import Simulation as Sim
+from dynode import Simulation as Sim
 
 from test_systems import EmptyTestSystem, VanDerPol, ErrorTestSystem, MockVanDerPol
 
@@ -70,7 +70,7 @@ def test_states_ders_mismatch():
 
     sim.add_system(ErrorTestSystem())
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RuntimeError):
         sim.simulate(10, 0.1)
 
 def test_fixed_step_size():
