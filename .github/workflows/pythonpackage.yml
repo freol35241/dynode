@@ -31,7 +31,7 @@ jobs:
         pip install -e .
     - name: Test with pytest
       run: |
-        pytest --cov=dynode --cov-report=xml --pinned-path test/expected.json test
+        pytest --cov=dynode --cov-report=xml test
     - name: Codecov
       uses: codecov/codecov-action@v1.0.7
       with:

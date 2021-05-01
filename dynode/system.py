@@ -90,12 +90,12 @@ class SystemInterface(ABC):
     def get_states(self):
 
         states = [sub.get_states() for sub in self._subs]
-        states.append(list(self.states.values()))
+        states.extend(list(self.states.values()))
 
         return np.concatenate(
             states,
             axis=None
-        )
+        ) if states else np.array(states)
 
     def dispatch_states(self, idx, states):
 
