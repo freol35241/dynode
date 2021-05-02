@@ -66,21 +66,24 @@ class VanDerPol(SystemInterface):
         self.ders.dy = mu*(1-x**2)*y - x
 </code></pre>
 <p>And may be simulated like this:</p>
-<pre><code class="language-python">from dynode.simulation import Simulation
+<pre><code class="language-python">from dynode.simulation import Simulation, Recorder
 
 sys = VanDerPol()
-sys.store('states.x', alias='x')
-sys.store('states.y', alias='y')
+
+rec = Recorder()
+rec.store(sys, 'states.x', alias='x')
+rec.store(sys, 'states.y', alias='y')
 
 sim = Simulation()
 sim.add_system(sys)
+sim.add_observer(rec)
 
 sys.states.x = 1
 sim.simulate(100, 0.1)
 
 import matplotlib.pyplot as plt
-plt.plot(sys.res['time'], sys.res['x'])
-plt.plot(sys.res['time'], sys.res['y'])
+plt.plot(rec[sys]['time'], rec[sys]['x'])
+plt.plot(rec[sys]['time'], rec[sys]['y'])
 plt.show()
 </code></pre>
 <h2 id="connected-systems">Connected systems</h2>
@@ -97,7 +100,7 @@ plt.show()
 <li>The damping parmeter (<code>mu</code>) of oscillator 2 is forced to follow the the state <code>y</code> of oscillator 1</li>
 </ul>
 <p>In dynode, the above scenario can be described and simulated as:</p>
-<pre><code class="language-python">from dynode import connect_signals
+<pre><code class="language-python">from dynode import connect_signals, Simulation
 
 sys1 = VanDerPol()
 sys1.states.x = 1
@@ -113,7 +116,7 @@ def sinus_forcer(sys, t):
 
 sys1.add_pre_connection(sinus_forcer)
 
-sim = Sim()
+sim = Simulation()
 sim.add_system(sys1)
 sim.add_system(sys2)
 
@@ -145,6 +148,7 @@ __pdoc__ = {
 from typing import Callable
 
 from .simulation import Simulation
+from .recorder import Recorder
 from .system import SystemInterface
 
 
@@ -167,10 +171,17 @@ def connect_signals(container1, key1, container2, key2) -&gt; Callable:
     return connect
 
 
-__all__ = [&#34;Simulation&#34;, &#34;SystemInterface&#34;, &#34;connect_signals&#34;]</code></pre>
+__all__ = [&#34;Simulation&#34;, &#34;Recorder&#34;, &#34;SystemInterface&#34;, &#34;connect_signals&#34;]</code></pre>
 </details>
 </section>
 <section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="dynode.recorder" href="recorder.html">dynode.recorder</a></code></dt>
+<dd>
+<div class="desc"><p>Generic recording functionality</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -217,6 +228,94 @@ post-step connection.</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="dynode.Recorder"><code class="flex name class">
+<span>class <span class="ident">Recorder</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>defaultdict(default_factory[, &hellip;]) &ndash;&gt; dict with default factory</p>
+<p>The default factory is called without arguments to produce
+a new value when a key is not present, in <strong>getitem</strong> only.
+A defaultdict compares equal to a dict with the same items.
+All remaining arguments are treated the same as if they were
+passed to the dict constructor, including keyword arguments.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Recorder(defaultdict):
+    def __init__(self):
+        super().__init__(lambda: defaultdict(list))
+        self._stores = defaultdict(list)
+
+    def store(self, system, attribute: str, alias: str = None) -&gt; None:
+        &#34;&#34;&#34;
+        Adds an attribute or subattribute of &#39;system&#39;
+         to be stored during a simulation.
+
+        `attribute` is a string of the form `x.y.z`
+
+        `alias` is optionally a string under which the stored attribute will be
+         available at in the result.
+
+        Raises `AttributeError` if attribute is non-existing
+        &#34;&#34;&#34;
+        attrgetter(attribute)(
+            system
+        )  # Try to access attribute, raises AttributeError if non-existing
+
+        self._stores[system].append((attribute, alias or attribute))
+
+    def __call__(self, time, _):
+        for sys, store_vars in self._stores.items():
+            self[sys][&#34;time&#34;].append(time)
+            for attr_str, key_str in store_vars:
+                val = deepcopy(attrgetter(attr_str)(sys))
+                self[sys][key_str].append(
+                    val
+                )  # TODO: Find a better way to handle `sys`</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.defaultdict</li>
+<li>builtins.dict</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="dynode.Recorder.store"><code class="name flex">
+<span>def <span class="ident">store</span></span>(<span>self, system, attribute: str, alias: str = None) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds an attribute or subattribute of 'system'
+to be stored during a simulation.</p>
+<p><code>attribute</code> is a string of the form <code>x.y.z</code></p>
+<p><code>alias</code> is optionally a string under which the stored attribute will be
+available at in the result.</p>
+<p>Raises <code>AttributeError</code> if attribute is non-existing</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def store(self, system, attribute: str, alias: str = None) -&gt; None:
+    &#34;&#34;&#34;
+    Adds an attribute or subattribute of &#39;system&#39;
+     to be stored during a simulation.
+
+    `attribute` is a string of the form `x.y.z`
+
+    `alias` is optionally a string under which the stored attribute will be
+     available at in the result.
+
+    Raises `AttributeError` if attribute is non-existing
+    &#34;&#34;&#34;
+    attrgetter(attribute)(
+        system
+    )  # Try to access attribute, raises AttributeError if non-existing
+
+    self._stores[system].append((attribute, alias or attribute))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="dynode.Simulation"><code class="flex name class">
 <span>class <span class="ident">Simulation</span></span>
 </code></dt>
@@ -237,7 +336,7 @@ numerical integration scheme.</p></div>
 
     def __init__(self):
         self._systems = list()
-        self._events = set()
+        self._observers = list()
         self._t = 0
 
     @property
@@ -251,30 +350,42 @@ numerical integration scheme.</p></div>
         &#34;&#34;&#34;
         Adds a system to the simulation
         &#34;&#34;&#34;
-        if not system in self._systems:
-            self._systems.append(system)
+        if system in self._systems:
+            raise ValueError(
+                f&#34;System({system}) has already been added to this simulation!&#34;
+            )
+        self._systems.append(system)
 
-    def add_event(self, event) -&gt; None:
+    def add_observer(self, observer) -&gt; None:
         &#34;&#34;&#34;
-        Adds an event to this simulation.
+        Adds an observer to this simulation.
 
-        `event` is a callable of the form:
+        `observer` is a callable of the form:
         ```
-        def event(t : int, states : np.ndarray) -&gt; bool:
-            return True or False
+        def observer(t : int, states : np.ndarray) -&gt; None:
         ```
-        The simulation will break early if any such event returns True
+
+        The observer is called for every  `observer_dt` during the simulation.
+
+        An `observer` can return True to signal that the simulation should break early.
+        ```
+        def observer(t : int, states : np.ndarray) -&gt; bool:
+            return True
+        ```
         &#34;&#34;&#34;
-        self._events.add(event)
-        return partial(self._events.remove, event)
+        if observer in self._observers:
+            raise ValueError(f&#34;Observer({observer}) already registered!&#34;)
+
+        self._observers.append(observer)
+        return partial(self._observers.remove, observer)
 
     # pylint: disable=invalid-name, protected-access
     def simulate(
-        self, t, store_dt, fixed_step=False, integrator=&#34;dopri5&#34;, **kwargs
+        self, t, observer_dt, fixed_step=False, integrator=&#34;dopri5&#34;, **kwargs
     ) -&gt; int:
         &#34;&#34;&#34;
-        Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+        Step forward in time, `t` seconds while informing any `observer`s about the
+         progress every `observer_dt` interval. If `fixed_step=True`, `observer_dt`
          is also used as the internal step size of the solver, leaving the user in
          charge of choosing a reasonable step size for the problem at hand.
 
@@ -311,7 +422,7 @@ numerical integration scheme.</p></div>
         solver.set_initial_value(y0, t=self._t)
 
         # Try with a large step from the beginning
-        kwargs.update({&#34;first_step&#34;: store_dt})
+        kwargs.update({&#34;first_step&#34;: observer_dt})
 
         # Fixed step size workaround
         if fixed_step:
@@ -320,33 +431,29 @@ numerical integration scheme.</p></div>
         # Setup of integration scheme
         solver.set_integrator(integrator, **kwargs)
 
-        # Store initial results
+        # Inform the observers about the initial state
         if self._t == 0:
-            for sys in self.systems:
-                sys.do_store(self._t)
+            for obs in self._observers:
+                obs(self._t, solver.y)
 
         # Integrate
-        steps = int(t / store_dt)
+        steps = int(t / observer_dt)
 
         for _ in range(steps):
 
             # Step
-            solver.integrate(solver.t + store_dt)
+            solver.integrate(solver.t + observer_dt)
             if not solver.successful():
                 raise RuntimeError(&#34;Solver failed&#34;)
 
-            # Store results
-            for sys in self.systems:
-                sys.do_store(solver.t)
-
-            # Check events
+            # Inform observers and gather their responses
             terminate = False
-            for event in self._events:
-                if event(solver.t, solver.y):
+            for obs in self._observers:
+                if obs(solver.t, solver.y):
                     terminate = True
                     break
 
-            # Bail if any event is True
+            # Bail if any observer returns True
             if terminate:
                 break
 
@@ -375,33 +482,46 @@ def systems(self):
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="dynode.Simulation.add_event"><code class="name flex">
-<span>def <span class="ident">add_event</span></span>(<span>self, event) ‑> NoneType</span>
+<dt id="dynode.Simulation.add_observer"><code class="name flex">
+<span>def <span class="ident">add_observer</span></span>(<span>self, observer) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Adds an event to this simulation.</p>
-<p><code>event</code> is a callable of the form:</p>
-<pre><code>def event(t : int, states : np.ndarray) -&gt; bool:
-    return True or False
+<div class="desc"><p>Adds an observer to this simulation.</p>
+<p><code>observer</code> is a callable of the form:</p>
+<pre><code>def observer(t : int, states : np.ndarray) -&gt; None:
 </code></pre>
-<p>The simulation will break early if any such event returns True</p></div>
+<p>The observer is called for every
+<code>observer_dt</code> during the simulation.</p>
+<p>An <code>observer</code> can return True to signal that the simulation should break early.</p>
+<pre><code>def observer(t : int, states : np.ndarray) -&gt; bool:
+    return True
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_event(self, event) -&gt; None:
+<pre><code class="python">def add_observer(self, observer) -&gt; None:
     &#34;&#34;&#34;
-    Adds an event to this simulation.
+    Adds an observer to this simulation.
 
-    `event` is a callable of the form:
+    `observer` is a callable of the form:
     ```
-    def event(t : int, states : np.ndarray) -&gt; bool:
-        return True or False
+    def observer(t : int, states : np.ndarray) -&gt; None:
     ```
-    The simulation will break early if any such event returns True
+
+    The observer is called for every  `observer_dt` during the simulation.
+
+    An `observer` can return True to signal that the simulation should break early.
+    ```
+    def observer(t : int, states : np.ndarray) -&gt; bool:
+        return True
+    ```
     &#34;&#34;&#34;
-    self._events.add(event)
-    return partial(self._events.remove, event)</code></pre>
+    if observer in self._observers:
+        raise ValueError(f&#34;Observer({observer}) already registered!&#34;)
+
+    self._observers.append(observer)
+    return partial(self._observers.remove, observer)</code></pre>
 </details>
 </dd>
 <dt id="dynode.Simulation.add_system"><code class="name flex">
@@ -417,16 +537,19 @@ def systems(self):
     &#34;&#34;&#34;
     Adds a system to the simulation
     &#34;&#34;&#34;
-    if not system in self._systems:
-        self._systems.append(system)</code></pre>
+    if system in self._systems:
+        raise ValueError(
+            f&#34;System({system}) has already been added to this simulation!&#34;
+        )
+    self._systems.append(system)</code></pre>
 </details>
 </dd>
 <dt id="dynode.Simulation.simulate"><code class="name flex">
-<span>def <span class="ident">simulate</span></span>(<span>self, t, store_dt, fixed_step=False, integrator='dopri5', **kwargs) ‑> int</span>
+<span>def <span class="ident">simulate</span></span>(<span>self, t, observer_dt, fixed_step=False, integrator='dopri5', **kwargs) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Step forward in time, <code>t</code> seconds while storing any stored variables and
-checking events every <code>store_dt</code> interval. If <code>fixed_step=True</code>, <code>store_dt</code>
+<div class="desc"><p>Step forward in time, <code>t</code> seconds while informing any <code>observer</code>s about the
+progress every <code>observer_dt</code> interval. If <code>fixed_step=True</code>, <code>observer_dt</code>
 is also used as the internal step size of the solver, leaving the user in
 charge of choosing a reasonable step size for the problem at hand.</p>
 <p>Returns the current time of the simulation.</p>
@@ -441,11 +564,11 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def simulate(
-    self, t, store_dt, fixed_step=False, integrator=&#34;dopri5&#34;, **kwargs
+    self, t, observer_dt, fixed_step=False, integrator=&#34;dopri5&#34;, **kwargs
 ) -&gt; int:
     &#34;&#34;&#34;
-    Step forward in time, `t` seconds while storing any stored variables and
-     checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+    Step forward in time, `t` seconds while informing any `observer`s about the
+     progress every `observer_dt` interval. If `fixed_step=True`, `observer_dt`
      is also used as the internal step size of the solver, leaving the user in
      charge of choosing a reasonable step size for the problem at hand.
 
@@ -482,7 +605,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     solver.set_initial_value(y0, t=self._t)
 
     # Try with a large step from the beginning
-    kwargs.update({&#34;first_step&#34;: store_dt})
+    kwargs.update({&#34;first_step&#34;: observer_dt})
 
     # Fixed step size workaround
     if fixed_step:
@@ -491,33 +614,29 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     # Setup of integration scheme
     solver.set_integrator(integrator, **kwargs)
 
-    # Store initial results
+    # Inform the observers about the initial state
     if self._t == 0:
-        for sys in self.systems:
-            sys.do_store(self._t)
+        for obs in self._observers:
+            obs(self._t, solver.y)
 
     # Integrate
-    steps = int(t / store_dt)
+    steps = int(t / observer_dt)
 
     for _ in range(steps):
 
         # Step
-        solver.integrate(solver.t + store_dt)
+        solver.integrate(solver.t + observer_dt)
         if not solver.successful():
             raise RuntimeError(&#34;Solver failed&#34;)
 
-        # Store results
-        for sys in self.systems:
-            sys.do_store(solver.t)
-
-        # Check events
+        # Inform observers and gather their responses
         terminate = False
-        for event in self._events:
-            if event(solver.t, solver.y):
+        for obs in self._observers:
+            if obs(solver.t, solver.y):
                 terminate = True
                 break
 
-        # Bail if any event is True
+        # Bail if any observer returns True
         if terminate:
             break
 
@@ -561,10 +680,6 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         self._pre_connections = dict()
         self._post_connections = dict()
 
-        # Result
-        self._store_vars = set()
-        self._res = ResultContainer()
-
     # Properties
     @property
     def states(self):
@@ -601,15 +716,6 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         Accessible as attributes.
         &#34;&#34;&#34;
         return self._outputs
-
-    @property
-    def res(self):
-        &#34;&#34;&#34;
-        ResultContainer of stored results.
-
-        Accessible as keys.
-        &#34;&#34;&#34;
-        return self._res
 
     # State/der handling
     def get_states(self):
@@ -705,35 +811,6 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 
         return _deleter
 
-    # Results API
-    def do_store(self, time):
-
-        for sub in self._subs:
-            sub.do_store(time)
-
-        for attr_str, key_str in self._store_vars:
-            val = deepcopy(attrgetter(attr_str)(self))
-            self.res.store(key_str, val)
-
-        self.res.store(&#34;time&#34;, time)
-
-    def store(self, attribute: str, alias=None) -&gt; None:
-        &#34;&#34;&#34;
-        Adds an attribute or subattribute of this system
-         to be stored during a simulation.
-
-        `attribute` is a string of the form `x.y.z`
-
-        `alias` is optionally a string under which the stored attribute will be
-         available at in the result.
-
-        Raises `AttributeError` if attribute is non-existing
-        &#34;&#34;&#34;
-        attrgetter(attribute)(
-            self
-        )  # Try to access attribute, raises AttributeError if non-existing
-        self._store_vars.add((attribute, alias or attribute))
-
     # pylint: disable=protected-access
     def _step(self, time):
         # Recurse over subsystems
@@ -816,24 +893,6 @@ def outputs(self):
     Accessible as attributes.
     &#34;&#34;&#34;
     return self._outputs</code></pre>
-</details>
-</dd>
-<dt id="dynode.SystemInterface.res"><code class="name">var <span class="ident">res</span></code></dt>
-<dd>
-<div class="desc"><p>ResultContainer of stored results.</p>
-<p>Accessible as keys.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def res(self):
-    &#34;&#34;&#34;
-    ResultContainer of stored results.
-
-    Accessible as keys.
-    &#34;&#34;&#34;
-    return self._res</code></pre>
 </details>
 </dd>
 <dt id="dynode.SystemInterface.states"><code class="name">var <span class="ident">states</span></code></dt>
@@ -974,27 +1033,6 @@ def do_step(self, time):
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="dynode.SystemInterface.do_store"><code class="name flex">
-<span>def <span class="ident">do_store</span></span>(<span>self, time)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def do_store(self, time):
-
-    for sub in self._subs:
-        sub.do_store(time)
-
-    for attr_str, key_str in self._store_vars:
-        val = deepcopy(attrgetter(attr_str)(self))
-        self.res.store(key_str, val)
-
-    self.res.store(&#34;time&#34;, time)</code></pre>
-</details>
-</dd>
 </dl>
 </dd>
 </dl>
@@ -1019,6 +1057,11 @@ def do_step(self, time):
 </ul>
 </div>
 <ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="dynode.recorder" href="recorder.html">dynode.recorder</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="dynode.connect_signals" href="#dynode.connect_signals">connect_signals</a></code></li>
@@ -1027,9 +1070,15 @@ def do_step(self, time):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="dynode.Recorder" href="#dynode.Recorder">Recorder</a></code></h4>
+<ul class="">
+<li><code><a title="dynode.Recorder.store" href="#dynode.Recorder.store">store</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="dynode.Simulation" href="#dynode.Simulation">Simulation</a></code></h4>
 <ul class="">
-<li><code><a title="dynode.Simulation.add_event" href="#dynode.Simulation.add_event">add_event</a></code></li>
+<li><code><a title="dynode.Simulation.add_observer" href="#dynode.Simulation.add_observer">add_observer</a></code></li>
 <li><code><a title="dynode.Simulation.add_system" href="#dynode.Simulation.add_system">add_system</a></code></li>
 <li><code><a title="dynode.Simulation.simulate" href="#dynode.Simulation.simulate">simulate</a></code></li>
 <li><code><a title="dynode.Simulation.systems" href="#dynode.Simulation.systems">systems</a></code></li>
@@ -1043,10 +1092,8 @@ def do_step(self, time):
 <li><code><a title="dynode.SystemInterface.add_subsystem" href="#dynode.SystemInterface.add_subsystem">add_subsystem</a></code></li>
 <li><code><a title="dynode.SystemInterface.ders" href="#dynode.SystemInterface.ders">ders</a></code></li>
 <li><code><a title="dynode.SystemInterface.do_step" href="#dynode.SystemInterface.do_step">do_step</a></code></li>
-<li><code><a title="dynode.SystemInterface.do_store" href="#dynode.SystemInterface.do_store">do_store</a></code></li>
 <li><code><a title="dynode.SystemInterface.inputs" href="#dynode.SystemInterface.inputs">inputs</a></code></li>
 <li><code><a title="dynode.SystemInterface.outputs" href="#dynode.SystemInterface.outputs">outputs</a></code></li>
-<li><code><a title="dynode.SystemInterface.res" href="#dynode.SystemInterface.res">res</a></code></li>
 <li><code><a title="dynode.SystemInterface.states" href="#dynode.SystemInterface.states">states</a></code></li>
 </ul>
 </li>
