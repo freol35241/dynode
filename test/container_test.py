@@ -1,8 +1,7 @@
 import pytest
-import mock
 import numpy as np
 
-from dynode.containers import ParameterContainer, VariableContainer, ResultContainer
+from dynode.containers import ParameterContainer, VariableContainer
 
 
 @pytest.mark.parametrize("cont", [ParameterContainer, VariableContainer])
@@ -69,14 +68,3 @@ def test_type_enforcement_dict():
     with pytest.raises(TypeError):
         test_dict = {"test": 10}
         c["test"] = test_dict
-
-
-def test_result_storing():
-    c = ResultContainer()
-    N = 10
-
-    for i in range(N):
-        c.store("test", [i, i, i])
-
-    assert len(c["test"]) == N
-    assert [N - 1, N - 1, N - 1] == c["test"][-1]

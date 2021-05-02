@@ -57,21 +57,24 @@ class VanDerPol(SystemInterface):
 And may be simulated like this:
 
 ```python
-from dynode.simulation import Simulation
+from dynode.simulation import Simulation, Recorder
 
 sys = VanDerPol()
-sys.store('states.x', alias='x')
-sys.store('states.y', alias='y')
+
+rec = Recorder()
+rec.store(sys, 'states.x', alias='x')
+rec.store(sys, 'states.y', alias='y')
 
 sim = Simulation()
 sim.add_system(sys)
+sim.add_observer(rec)
 
 sys.states.x = 1
 sim.simulate(100, 0.1)
 
 import matplotlib.pyplot as plt
-plt.plot(sys.res['time'], sys.res['x'])
-plt.plot(sys.res['time'], sys.res['y'])
+plt.plot(rec[sys]['time'], rec[sys]['x'])
+plt.plot(rec[sys]['time'], rec[sys]['y'])
 plt.show()
 ```
 
@@ -95,7 +98,7 @@ Imagine the situation where you have two oscillators interacting as follows:
 
 In dynode, the above scenario can be described and simulated as:
 ```python
-from dynode import connect_signals
+from dynode import connect_signals, Simulation
 
 sys1 = VanDerPol()
 sys1.states.x = 1
@@ -111,7 +114,7 @@ def sinus_forcer(sys, t):
 
 sys1.add_pre_connection(sinus_forcer)
 
-sim = Sim()
+sim = Simulation()
 sim.add_system(sys1)
 sim.add_system(sys2)
 

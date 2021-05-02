@@ -3,32 +3,36 @@ import numpy as np
 
 from test_systems import VanDerPol, SingleDegreeMass
 
-from dynode import connect_signals
-from dynode.simulation import Simulation as Sim
+from dynode import connect_signals, Simulation as Sim, Recorder
 
 
 def test_VanDerPol(pinned):
     s = VanDerPol()
     s.states.x = 1
-    s.store("states.x")
+
+    rec = Recorder()
+    rec.store(s, "states.x")
 
     sim = Sim()
     sim.add_system(s)
+    sim.add_observer(rec)
 
     sim.simulate(100, 0.1)
 
     assert s.states.x == pinned.approx()
     assert s.states.y == pinned.approx()
-    assert s.res["states.x"] == pinned.approx()
+    assert rec[s]["states.x"] == pinned.approx()
 
 
 def test_connected_systems():
+    rec = Recorder()
+
     sys1 = VanDerPol()
     sys1.states.x = 1
-    sys1.store("states.y", "y")
+    rec.store(sys1, "states.y", "y")
 
     sys2 = VanDerPol()
-    sys2.store("inputs.mu", "mu")
+    rec.store(sys2, "inputs.mu", "mu")
 
     # Simple connection
     sys1.add_post_connection(connect_signals(sys1.states, "y", sys2.inputs, "mu"))
@@ -42,29 +46,31 @@ def test_connected_systems():
     sim = Sim()
     sim.add_system(sys1)
     sim.add_system(sys2)
+    sim.add_observer(rec)
 
     sim.simulate(10, 0.1)
 
-    assert np.array_equal(sys1.res["y"][1:], sys2.res["mu"][1:])
+    assert np.array_equal(rec[sys1]["y"][1:], rec[sys2]["mu"][1:])
 
 
 def test_heirarchical_systems():
+    rec = Recorder()
 
     sys1 = VanDerPol()
     sys1.states.x = 1
-    sys1.store("states.y")
+    rec.store(sys1, "states.y")
 
     sys11 = VanDerPol()
     sys11.states.x = 1
-    sys11.store("states.y")
+    rec.store(sys11, "states.y")
 
     sys2 = VanDerPol()
     sys2.states.x = 1
-    sys2.store("inputs.mu")
+    rec.store(sys2, "inputs.mu")
 
     sys22 = VanDerPol()
     sys22.states.x = 1
-    sys22.store("inputs.mu")
+    rec.store(sys22, "inputs.mu")
 
     # Simple connection
     sys1.add_post_connection(connect_signals(sys1.states, "y", sys2.inputs, "mu"))
@@ -82,6 +88,7 @@ def test_heirarchical_systems():
     sim.add_system(sys2)
     sys22.add_subsystem(sys11)
     sim.add_system(sys22)
+    sim.add_observer(rec)
 
     sim.simulate(10, 0.1)
 
@@ -99,15 +106,18 @@ def test_1DOF_MassSpring(pinned):
 
     # Initial state
     s.states.x = 10
-    s.store("states.x", "x")
+
+    rec = Recorder()
+    rec.store(s, "states.x", "x")
 
     sim = Sim()
     sim.add_system(s)
+    sim.add_observer(rec)
 
     sim.simulate(20, 0.05)
 
-    upper = max(s.res["x"][1:])
-    lower = min(s.res["x"][1:])
+    upper = max(rec[s]["x"][1:])
+    lower = min(rec[s]["x"][1:])
 
     assert upper == pinned.approx(rel=0.001)
     assert lower == pinned.approx(rel=0.001)

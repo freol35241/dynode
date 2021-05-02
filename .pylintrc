@@ -2,6 +2,7 @@
 disable = 
     missing-module-docstring,
     missing-function-docstring,
-    missing-class-docstring
+    missing-class-docstring,
+    fixme
 
 max-line-length = 88

@@ -6,7 +6,7 @@ import mock
 import numpy as np
 
 import dynode.system as ds
-from dynode.containers import ParameterContainer, VariableContainer, ResultContainer
+from dynode.containers import ParameterContainer, VariableContainer
 
 from test_systems import (
     VanDerPol,
@@ -28,7 +28,6 @@ def test_system_attributes():
     assert isinstance(s.outputs, ParameterContainer)
     assert isinstance(s.states, VariableContainer)
     assert isinstance(s.ders, VariableContainer)
-    assert isinstance(s.res, ResultContainer)
 
 
 @pytest.mark.parametrize(
@@ -189,37 +188,3 @@ def test_pre_connection_ordering():
     s._step(10.5)
 
     assert expected == result
-
-
-def test_storing_non_existing():
-
-    s = VanDerPol()
-
-    with pytest.raises(AttributeError):
-        s.store("mupp.muppet")
-
-
-def test_storing_existing(pinned):
-
-    s = VanDerPol()
-
-    s.store("inputs.mu")
-
-    s.do_store(0)
-    s.inputs.mu = 8
-    s.do_store(1)
-
-    assert s.res["inputs.mu"] == pinned
-
-
-def test_storing_existing_with_other_name(pinned):
-
-    s = VanDerPol()
-
-    s.store("inputs.mu", "mu")
-
-    s.do_store(0)
-    s.inputs.mu = 8
-    s.do_store(1)
-
-    assert s.res["mu"] == pinned

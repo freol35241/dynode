@@ -22,44 +22,44 @@ def test_simulation_with_no_states():
         sim.simulate(100, 0.1)
 
 
-def test_event_signature():
+def test_observer_signature():
     sim = Sim()
 
     s = VanDerPol()
     sim.add_system(s)
 
-    evt = mock.Mock()
-    sim.add_event(evt)
+    obs = mock.Mock()
+    sim.add_observer(obs)
 
     sim.simulate(1, 1)
 
-    t, y = evt.call_args.args
+    t, y = obs.call_args.args
 
     assert t == 1
     assert np.array_equal(y, np.array([s.states.x, s.states.y]).flatten())
 
 
-def test_event_breaking():
+def test_observer_breaking():
     sim = Sim()
 
     s = VanDerPol()
     sim.add_system(s)
 
-    sim.add_event(lambda t, y: True if t > 5 else False)
+    sim.add_observer(lambda t, y: True if t > 5 else False)
 
     t_end = sim.simulate(10, 0.1)
 
     assert t_end == pytest.approx(5.1)
 
 
-def test_event_removal():
+def test_observer_removal():
     sim = Sim()
 
     s = VanDerPol()
     sim.add_system(s)
 
-    evt = mock.Mock(return_value=False)
-    remover = sim.add_event(evt)
+    obs = mock.Mock(return_value=False)
+    remover = sim.add_observer(obs)
 
     sim.simulate(3, 0.1)
 
@@ -68,7 +68,7 @@ def test_event_removal():
     t_end = sim.simulate(10, 0.1)
 
     assert t_end == pytest.approx(13)
-    assert evt.call_count == 30
+    assert obs.call_count == 31
 
 
 def test_states_ders_mismatch():
