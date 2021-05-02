@@ -11,14 +11,15 @@ from operator import attrgetter
 
 import numpy as np
 
-from .containers import (ParameterContainer, VariableContainer,
-                         ResultContainer)
+from .containers import ParameterContainer, VariableContainer, ResultContainer
+
 
 class SystemInterface(ABC):
     """
     Abstract Base Class (ABC) defining the System Interface.
 
     """
+
     # pylint: disable=too-many-instance-attributes
     def __init__(self):
         super().__init__()
@@ -45,7 +46,7 @@ class SystemInterface(ABC):
     def states(self):
         """
         VariableContainer of states.
-        
+
         Accessible as attributes.
         """
         return self._states
@@ -54,7 +55,7 @@ class SystemInterface(ABC):
     def ders(self):
         """
         VariableContainer of ders.
-        
+
         Accessible as attributes.
         """
         return self._ders
@@ -63,7 +64,7 @@ class SystemInterface(ABC):
     def inputs(self):
         """
         ParameterContainer of inputs.
-        
+
         Accessible as attributes.
         """
         return self._inputs
@@ -72,7 +73,7 @@ class SystemInterface(ABC):
     def outputs(self):
         """
         ParameterContainer of outputs.
-        
+
         Accessible as attributes.
         """
         return self._outputs
@@ -81,7 +82,7 @@ class SystemInterface(ABC):
     def res(self):
         """
         ResultContainer of stored results.
-        
+
         Accessible as keys.
         """
         return self._res
@@ -92,10 +93,7 @@ class SystemInterface(ABC):
         states = [sub.get_states() for sub in self._subs]
         states.extend(list(self.states.values()))
 
-        return np.concatenate(
-            states,
-            axis=None
-        ) if states else np.array(states)
+        return np.concatenate(states, axis=None) if states else np.array(states)
 
     def dispatch_states(self, idx, states):
 
@@ -125,11 +123,11 @@ class SystemInterface(ABC):
     def add_subsystem(self, sub_system) -> None:
         """
         Add a subsystem to this system.
-        
+
         Raises `ValueError` if sub is a reference to this system.
         """
         if sub_system is self:
-            raise ValueError('Cant have self as subsystem to self!')
+            raise ValueError("Cant have self as subsystem to self!")
 
         if not sub_system in self._subs:
             self._subs.append(sub_system)
@@ -138,17 +136,17 @@ class SystemInterface(ABC):
     def add_pre_connection(self, connection_func) -> Callable:
         """
         Adds a pre-connection callable to this system.
-        
+
         `connection_func` is a callable of the form:
         ```
         def connection_func(system : SystemInterface, time : int):
             pass
         ```
-        
+
         Returns a callable that, when called, removes this pre-connection.
         """
         if connection_func in self._pre_connections:
-            raise ValueError('This pre-connection has already been added!')
+            raise ValueError("This pre-connection has already been added!")
 
         self._pre_connections.append(connection_func)
         return partial(self._pre_connections.remove, connection_func)
@@ -156,17 +154,17 @@ class SystemInterface(ABC):
     def add_post_connection(self, connection_func) -> Callable:
         """
         Adds a post-connection callable to this system.
-        
+
         `connection_func` is a callable of the form:
         ```
         def connection_func(system : SystemInterface, time : int):
             pass
         ```
-        
+
         Returns a callable that, when called, removes this post-connection.
         """
         if connection_func in self._post_connections:
-            raise ValueError('This post-connection has already been added!')
+            raise ValueError("This post-connection has already been added!")
 
         self._post_connections.append(connection_func)
         return partial(self._post_connections.remove, connection_func)
@@ -181,20 +179,23 @@ class SystemInterface(ABC):
             val = deepcopy(attrgetter(attr_str)(self))
             self.res.store(key_str, val)
 
-        self.res.store('time', time)
+        self.res.store("time", time)
 
-    def add_store(self, attribute : str, alias=None) -> None:
+    def add_store(self, attribute: str, alias=None) -> None:
         """
         Adds an attribute or subattribute of this system
          to be stored during a simulation.
-         
+
         `attribute` is a string of the form `x.y.z`
-        
-        `alias` is optionally a string under which the stored attribute will be available at in the result.
-        
+
+        `alias` is optionally a string under which the stored attribute will be
+         available at in the result.
+
         Raises `AttributeError` if attribute is non-existing
         """
-        attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
+        attrgetter(attribute)(
+            self
+        )  # Try to access attribute, raises AttributeError if non-existing
         self._store_vars.add((attribute, alias or attribute))
 
     # pylint: disable=protected-access
@@ -202,7 +203,7 @@ class SystemInterface(ABC):
         # Recurse over subsystems
         for sub in self._subs:
             sub._step(time)
-            
+
         # Apply pre-connections
         for con in self._pre_connections:
             con(self, time)
@@ -219,4 +220,3 @@ class SystemInterface(ABC):
         """
         To be implemented by child classes!
         """
-        pass

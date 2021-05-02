@@ -7,32 +7,33 @@ from setuptools import setup
 # string in below ...
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-    
+
+
 # Parse the requirements-txt file and use for install_requires in pip
-with open('requirements.txt') as f:
+with open("requirements.txt") as f:
     required = f.read().splitlines()
 
 setup(
-    name = "dynode",
-    version = "0.3.2",
-    author = "Fredrik Olsson",
-    author_email='freol@outlook.com',
-    maintainer='Fredrik Olsson',
-    maintainer_email='freol@outlook.com',
-    description = ("""A framework for modelling and simulation of dynamical systems"""),
-    url = "https://github.com/freol35241/dynode",
-    packages=['dynode'],
-    long_description=read('README.md'),
+    name="dynode",
+    version="0.3.2",
+    author="Fredrik Olsson",
+    author_email="freol@outlook.com",
+    maintainer="Fredrik Olsson",
+    maintainer_email="freol@outlook.com",
+    description=("""A framework for modelling and simulation of dynamical systems"""),
+    url="https://github.com/freol35241/dynode",
+    packages=["dynode"],
+    long_description=read("README.md"),
     long_description_content_type="text/markdown",
-    license='MIT',
-    python_requires='>=3.6',
+    license="MIT",
+    python_requires=">=3.6",
     classifiers=[
         "Development Status :: 4 - Beta",
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Operating System :: OS Independent',
-        'License :: OSI Approved :: MIT License',
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Operating System :: OS Independent",
+        "License :: OSI Approved :: MIT License",
     ],
-    install_requires = required,
+    install_requires=required,
 )
