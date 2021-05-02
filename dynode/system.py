@@ -170,10 +170,10 @@ class SystemInterface(ABC):
         return partial(self._post_connections.remove, connection_func)
 
     # Results API
-    def store(self, time):
+    def do_store(self, time):
 
         for sub in self._subs:
-            sub.store(time)
+            sub.do_store(time)
 
         for attr_str, key_str in self._store_vars:
             val = deepcopy(attrgetter(attr_str)(self))
@@ -181,7 +181,7 @@ class SystemInterface(ABC):
 
         self.res.store("time", time)
 
-    def add_store(self, attribute: str, alias=None) -> None:
+    def store(self, attribute: str, alias=None) -> None:
         """
         Adds an attribute or subattribute of this system
          to be stored during a simulation.

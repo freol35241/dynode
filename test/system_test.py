@@ -134,18 +134,18 @@ def test_storing_non_existing():
     s = VanDerPol()
 
     with pytest.raises(AttributeError):
-        s.add_store("mupp.muppet")
+        s.store("mupp.muppet")
 
 
 def test_storing_existing(pinned):
 
     s = VanDerPol()
 
-    s.add_store("inputs.mu")
+    s.store("inputs.mu")
 
-    s.store(0)
+    s.do_store(0)
     s.inputs.mu = 8
-    s.store(1)
+    s.do_store(1)
 
     assert s.res["inputs.mu"] == pinned
 
@@ -154,10 +154,10 @@ def test_storing_existing_with_other_name(pinned):
 
     s = VanDerPol()
 
-    s.add_store("inputs.mu", "mu")
+    s.store("inputs.mu", "mu")
 
-    s.store(0)
+    s.do_store(0)
     s.inputs.mu = 8
-    s.store(1)
+    s.do_store(1)
 
     assert s.res["mu"] == pinned
