@@ -60,8 +60,8 @@ And may be simulated like this:
 from dynode.simulation import Simulation
 
 sys = VanDerPol()
-sys.add_store('states.x', alias='x')
-sys.add_store('states.y', alias='y')
+sys.store('states.x', alias='x')
+sys.store('states.y', alias='y')
 
 sim = Simulation()
 sim.add_system(sys)

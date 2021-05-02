@@ -1,6 +1,7 @@
 """Collection of data containers used by a dynode System
 """
 from collections.abc import Sequence
+from collections import defaultdict
 
 import numpy as np
 
@@ -32,7 +33,10 @@ class VariableContainer(ParameterContainer):
             return array
 
 
-class ResultContainer(dict):
+class ResultContainer(defaultdict):
+    def __init__(self):
+        super().__init__(list)
+
     def store(self, key, value):
         """Store value associated with key.
 
@@ -43,5 +47,4 @@ class ResultContainer(dict):
         value : any
             Value to be stored
         """
-        self[key] = self.get(key, [])
         self[key].append(value)

@@ -10,7 +10,7 @@ from dynode.simulation import Simulation as Sim
 def test_VanDerPol(pinned):
     s = VanDerPol()
     s.states.x = 1
-    s.add_store("states.x")
+    s.store("states.x")
 
     sim = Sim()
     sim.add_system(s)
@@ -25,10 +25,10 @@ def test_VanDerPol(pinned):
 def test_connected_systems():
     sys1 = VanDerPol()
     sys1.states.x = 1
-    sys1.add_store("states.y", "y")
+    sys1.store("states.y", "y")
 
     sys2 = VanDerPol()
-    sys2.add_store("inputs.mu", "mu")
+    sys2.store("inputs.mu", "mu")
 
     # Simple connection
     sys1.add_post_connection(connect_signals(sys1.states, "y", sys2.inputs, "mu"))
@@ -43,7 +43,7 @@ def test_connected_systems():
     sim.add_system(sys1)
     sim.add_system(sys2)
 
-    sim.simulate(100, 0.1)
+    sim.simulate(10, 0.1)
 
     assert np.array_equal(sys1.res["y"][1:], sys2.res["mu"][1:])
 
@@ -52,19 +52,19 @@ def test_heirarchical_systems():
 
     sys1 = VanDerPol()
     sys1.states.x = 1
-    sys1.add_store("states.y")
+    sys1.store("states.y")
 
     sys11 = VanDerPol()
     sys11.states.x = 1
-    sys11.add_store("states.y")
+    sys11.store("states.y")
 
     sys2 = VanDerPol()
     sys2.states.x = 1
-    sys2.add_store("inputs.mu")
+    sys2.store("inputs.mu")
 
     sys22 = VanDerPol()
     sys22.states.x = 1
-    sys22.add_store("inputs.mu")
+    sys22.store("inputs.mu")
 
     # Simple connection
     sys1.add_post_connection(connect_signals(sys1.states, "y", sys2.inputs, "mu"))
@@ -83,7 +83,7 @@ def test_heirarchical_systems():
     sys22.add_subsystem(sys11)
     sim.add_system(sys22)
 
-    sim.simulate(100, 0.1)
+    sim.simulate(10, 0.1)
 
     assert np.array_equal(sys2.states.y, sys22.states.y)
 
@@ -99,12 +99,12 @@ def test_1DOF_MassSpring(pinned):
 
     # Initial state
     s.states.x = 10
-    s.add_store("states.x", "x")
+    s.store("states.x", "x")
 
     sim = Sim()
     sim.add_system(s)
 
-    sim.simulate(20, 0.01)
+    sim.simulate(20, 0.05)
 
     upper = max(s.res["x"][1:])
     lower = min(s.res["x"][1:])

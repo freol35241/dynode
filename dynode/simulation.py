@@ -126,7 +126,7 @@ class Simulation:
         # Store initial results
         if self._t == 0:
             for sys in self.systems:
-                sys.store(self._t)
+                sys.do_store(self._t)
 
         # Integrate
         steps = int(t / store_dt)
@@ -140,7 +140,7 @@ class Simulation:
 
             # Store results
             for sys in self.systems:
-                sys.store(solver.t)
+                sys.do_store(solver.t)
 
             # Check events
             terminate = False
