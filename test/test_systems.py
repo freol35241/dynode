@@ -4,8 +4,8 @@ Collection of simple systems for test purposes
 import mock
 from dynode import SystemInterface
 
-class VanDerPol(SystemInterface):
 
+class VanDerPol(SystemInterface):
     def __init__(self):
         super().__init__()
         self.inputs.mu = 1.0
@@ -20,10 +20,10 @@ class VanDerPol(SystemInterface):
         y = self.states.y
 
         self.ders.dx = y
-        self.ders.dy = mu*(1-x**2)*y - x
+        self.ders.dy = mu * (1 - x ** 2) * y - x
+
 
 class SingleDegreeMass(SystemInterface):
-
     def __init__(self):
         super().__init__()
         self.states.x = 0
@@ -38,37 +38,39 @@ class SingleDegreeMass(SystemInterface):
         f = self.inputs.force
 
         self.ders.dx = self.states.u
-        self.ders.du = f/m
+        self.ders.du = f / m
+
 
 class EmptyTestSystem(SystemInterface):
-    """Dummy test system 
-    """
+    """Dummy test system"""
+
     def do_step(self, t):
         pass
 
+
 class CompositeTestSystem(EmptyTestSystem):
-    """Composite test system
-    """
+    """Composite test system"""
+
     def __init__(self):
         super().__init__()
         self.add_subsystem(VanDerPol())
         self.add_subsystem(SingleDegreeMass())
 
-class ErrorTestSystem(EmptyTestSystem):
 
+class ErrorTestSystem(EmptyTestSystem):
     def __init__(self):
         super().__init__()
         self.states.x = [1, 2]
         self.states.y = 0
         self.ders.dx = 0
         self.ders.dy = 0
-        
+
+
 class MockVanDerPol(VanDerPol):
-    
     def __init__(self):
         super().__init__()
         self.mock = mock.Mock()
-        
+
     def do_step(self, time):
         self.mock(time)
         super().do_step(time)

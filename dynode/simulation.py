@@ -8,11 +8,10 @@ from functools import partial
 import numpy as np
 from scipy.integrate import ode
 
+
 def collect_states(systems):
-    return np.concatenate(
-        [sys.get_states() for sys in systems],
-        axis=None
-    )
+    return np.concatenate([sys.get_states() for sys in systems], axis=None)
+
 
 def dispatch_states(states, systems):
     idx = 0
@@ -20,7 +19,8 @@ def dispatch_states(states, systems):
         idx = sys.dispatch_states(idx, states)
 
     if len(states) != idx:
-        raise RuntimeError('Mismatch in number of states and ders!')
+        raise RuntimeError("Mismatch in number of states and ders!")
+
 
 def collect_ders(ders, systems):
     idx = 0
@@ -28,7 +28,8 @@ def collect_ders(ders, systems):
         idx = sys.get_ders(idx, ders)
 
     if len(ders) != idx:
-        raise RuntimeError('Mismatch in number of states and ders!')
+        raise RuntimeError("Mismatch in number of states and ders!")
+
 
 class Simulation:
     """
@@ -36,11 +37,12 @@ class Simulation:
      dynamical systems that can be stepped forward in time by a
      numerical integration scheme.
     """
+
     def __init__(self):
         self._systems = list()
         self._events = set()
         self._t = 0
-        
+
     @property
     def systems(self):
         """
@@ -58,7 +60,7 @@ class Simulation:
     def add_event(self, event) -> None:
         """
         Adds an event to this simulation.
-        
+
         `event` is a callable of the form:
         ```
         def event(t : int, states : np.ndarray) -> bool:
@@ -69,29 +71,31 @@ class Simulation:
         self._events.add(event)
         return partial(self._events.remove, event)
 
-    #pylint: disable=invalid-name, protected-access
-    def simulate(self, t, store_dt, fixed_step=False, integrator='dopri5', **kwargs) -> int:
+    # pylint: disable=invalid-name, protected-access
+    def simulate(
+        self, t, store_dt, fixed_step=False, integrator="dopri5", **kwargs
+    ) -> int:
         """
         Step forward in time, `t` seconds while storing any stored variables and
          checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
          is also used as the internal step size of the solver, leaving the user in
          charge of choosing a reasonable step size for the problem at hand.
-        
+
         Returns the current time of the simulation.
-         
+
         Raise RuntimeErrors if:
-        
+
         * There are no systems added to the simulation
         * There are no states/ders to be integrated
         * The solver fails due to numerical instabilities
         """
         if not self.systems:
-            raise RuntimeError('Need at least 1 system in the simulation!')
+            raise RuntimeError("Need at least 1 system in the simulation!")
 
         # Initial state
         y0 = collect_states(self._systems)
         if not y0.size > 0:
-            raise RuntimeError('Need at least one state/der combination!')
+            raise RuntimeError("Need at least one state/der combination!")
 
         dy = np.zeros_like(y0)
 
@@ -109,16 +113,12 @@ class Simulation:
         solver = ode(func)
         solver.set_initial_value(y0, t=self._t)
 
-        #Try with a large step from the beginning
-        kwargs.update({
-            'first_step': store_dt
-        })
-        
+        # Try with a large step from the beginning
+        kwargs.update({"first_step": store_dt})
+
         # Fixed step size workaround
         if fixed_step:
-            kwargs.update({
-                'atol': np.inf
-            })
+            kwargs.update({"atol": np.inf})
 
         # Setup of integration scheme
         solver.set_integrator(integrator, **kwargs)
@@ -129,14 +129,14 @@ class Simulation:
                 sys.store(self._t)
 
         # Integrate
-        steps = int(t/store_dt)
+        steps = int(t / store_dt)
 
         for _ in range(steps):
 
             # Step
-            solver.integrate(solver.t+store_dt)
+            solver.integrate(solver.t + store_dt)
             if not solver.successful():
-                raise RuntimeError('Solver failed')
+                raise RuntimeError("Solver failed")
 
             # Store results
             for sys in self.systems:
@@ -152,7 +152,7 @@ class Simulation:
             # Bail if any event is True
             if terminate:
                 break
-            
+
         # Update internal state
         self._t = solver.t
 

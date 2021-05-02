@@ -6,11 +6,13 @@ from dynode import Simulation as Sim
 
 from test_systems import EmptyTestSystem, VanDerPol, ErrorTestSystem, MockVanDerPol
 
+
 def test_empty_simulation():
     sim = Sim()
 
     with pytest.raises(RuntimeError):
         sim.simulate(100, 0.1)
+
 
 def test_simulation_with_no_states():
     sim = Sim()
@@ -18,6 +20,7 @@ def test_simulation_with_no_states():
 
     with pytest.raises(RuntimeError):
         sim.simulate(100, 0.1)
+
 
 def test_event_signature():
     sim = Sim()
@@ -32,8 +35,9 @@ def test_event_signature():
 
     t, y = evt.call_args.args
 
-    assert(t == 1)
-    assert(np.array_equal(y, np.array([s.states.x, s.states.y]).flatten()))
+    assert t == 1
+    assert np.array_equal(y, np.array([s.states.x, s.states.y]).flatten())
+
 
 def test_event_breaking():
     sim = Sim()
@@ -45,7 +49,8 @@ def test_event_breaking():
 
     t_end = sim.simulate(10, 0.1)
 
-    assert(t_end == pytest.approx(5.1))
+    assert t_end == pytest.approx(5.1)
+
 
 def test_event_removal():
     sim = Sim()
@@ -62,8 +67,9 @@ def test_event_removal():
 
     t_end = sim.simulate(10, 0.1)
 
-    assert(t_end == pytest.approx(13))
-    assert(evt.call_count == 30)
+    assert t_end == pytest.approx(13)
+    assert evt.call_count == 30
+
 
 def test_states_ders_mismatch():
     sim = Sim()
@@ -73,6 +79,7 @@ def test_states_ders_mismatch():
     with pytest.raises(RuntimeError):
         sim.simulate(10, 0.1)
 
+
 def test_fixed_step_size():
     sim = Sim()
 
@@ -81,5 +88,5 @@ def test_fixed_step_size():
     sim.add_system(s)
 
     sim.simulate(3, 0.1, fixed_step=True)
-    
-    assert(s.mock.call_count == 3/0.1*7)
+
+    assert s.mock.call_count == 3 / 0.1 * 7
