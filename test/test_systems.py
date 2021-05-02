@@ -33,7 +33,7 @@ class SingleDegreeMass(SystemInterface):
         self.inputs.force = 0
         self.inputs.mass = 0
 
-    def do_step(self, time):
+    def do_step(self, _):
         m = self.inputs.mass
         f = self.inputs.force
 

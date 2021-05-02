@@ -4,10 +4,10 @@ Solving initial value problems of sets of connected and/or recursive
 """
 
 from copy import deepcopy
-from functools import partial
 from abc import ABC, abstractmethod
 from typing import Callable
 from operator import attrgetter
+from graphlib import TopologicalSorter
 
 import numpy as np
 
@@ -34,8 +34,8 @@ class SystemInterface(ABC):
         self._outputs = ParameterContainer()
 
         # Connections
-        self._pre_connections = list()
-        self._post_connections = list()
+        self._pre_connections = dict()
+        self._post_connections = dict()
 
         # Result
         self._store_vars = set()
@@ -133,7 +133,7 @@ class SystemInterface(ABC):
             self._subs.append(sub_system)
 
     # Connection API
-    def add_pre_connection(self, connection_func) -> Callable:
+    def add_pre_connection(self, connection_func, dependees=None) -> Callable:
         """
         Adds a pre-connection callable to this system.
 
@@ -148,10 +148,16 @@ class SystemInterface(ABC):
         if connection_func in self._pre_connections:
             raise ValueError("This pre-connection has already been added!")
 
-        self._pre_connections.append(connection_func)
-        return partial(self._pre_connections.remove, connection_func)
+        dependees = dependees or getattr(connection_func, "dependees", [])
 
-    def add_post_connection(self, connection_func) -> Callable:
+        self._pre_connections[connection_func] = dependees
+
+        def _deleter():
+            del self._pre_connections[connection_func]
+
+        return _deleter
+
+    def add_post_connection(self, connection_func, dependees=None) -> Callable:
         """
         Adds a post-connection callable to this system.
 
@@ -166,8 +172,14 @@ class SystemInterface(ABC):
         if connection_func in self._post_connections:
             raise ValueError("This post-connection has already been added!")
 
-        self._post_connections.append(connection_func)
-        return partial(self._post_connections.remove, connection_func)
+        dependees = dependees or getattr(connection_func, "dependees", [])
+
+        self._post_connections[connection_func] = dependees
+
+        def _deleter():
+            del self._post_connections[connection_func]
+
+        return _deleter
 
     # Results API
     def do_store(self, time):
@@ -205,14 +217,15 @@ class SystemInterface(ABC):
             sub._step(time)
 
         # Apply pre-connections
-        for con in self._pre_connections:
+
+        for con in TopologicalSorter(self._pre_connections).static_order():
             con(self, time)
 
         # Step this system
         self.do_step(time)
 
         # Apply post-connections
-        for con in self._post_connections:
+        for con in TopologicalSorter(self._post_connections).static_order():
             con(self, time)
 
     @abstractmethod

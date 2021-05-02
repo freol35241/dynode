@@ -57,7 +57,7 @@ def test_dispatch_states(sys):
 def test_pre_connection_callback_signature():
 
     s = EmptyTestSystem()
-    cb = mock.Mock()
+    cb = mock.Mock(dependees=[])
     t = 10.5
 
     s.add_pre_connection(cb)
@@ -70,7 +70,7 @@ def test_pre_connection_callback_signature():
 def test_post_connection_callback_signature():
 
     s = EmptyTestSystem()
-    cb = mock.Mock()
+    cb = mock.Mock(dependees=[])
     t = 10.5
 
     s.add_post_connection(cb)
@@ -127,6 +127,68 @@ def test_post_connection_add_twice():
 
     with pytest.raises(ValueError):
         s.add_post_connection(cb)
+
+
+def test_pre_connection_ordering():
+
+    s = EmptyTestSystem()
+
+    expected = [3, 1, 2]
+    result = []
+
+    def first(s, t):
+        result.append(3)
+
+    first.dependees = []
+
+    def second(s, t):
+        result.append(1)
+
+    second.dependees = [first]
+
+    def third(s, t):
+        result.append(2)
+
+    third.dependees = [second, first]
+
+    s.add_pre_connection(second)
+    s.add_pre_connection(third)
+    s.add_pre_connection(first)
+
+    s._step(10.5)
+
+    assert expected == result
+
+
+def test_pre_connection_ordering():
+
+    s = EmptyTestSystem()
+
+    expected = [3, 1, 2]
+    result = []
+
+    def first(s, t):
+        result.append(3)
+
+    first.dependees = []
+
+    def second(s, t):
+        result.append(1)
+
+    second.dependees = [first]
+
+    def third(s, t):
+        result.append(2)
+
+    third.dependees = [second, first]
+
+    s.add_post_connection(second)
+    s.add_post_connection(third)
+    s.add_post_connection(first)
+
+    s._step(10.5)
+
+    assert expected == result
 
 
 def test_storing_non_existing():

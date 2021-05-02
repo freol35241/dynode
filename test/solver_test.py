@@ -43,7 +43,7 @@ def test_connected_systems():
     sim.add_system(sys1)
     sim.add_system(sys2)
 
-    sim.simulate(100, 0.1)
+    sim.simulate(10, 0.1)
 
     assert np.array_equal(sys1.res["y"][1:], sys2.res["mu"][1:])
 
@@ -83,7 +83,7 @@ def test_heirarchical_systems():
     sys22.add_subsystem(sys11)
     sim.add_system(sys22)
 
-    sim.simulate(100, 0.1)
+    sim.simulate(10, 0.1)
 
     assert np.array_equal(sys2.states.y, sys22.states.y)
 
@@ -104,7 +104,7 @@ def test_1DOF_MassSpring(pinned):
     sim = Sim()
     sim.add_system(s)
 
-    sim.simulate(20, 0.01)
+    sim.simulate(20, 0.05)
 
     upper = max(s.res["x"][1:])
     lower = min(s.res["x"][1:])
