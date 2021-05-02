@@ -69,8 +69,8 @@ class VanDerPol(SystemInterface):
 <pre><code class="language-python">from dynode.simulation import Simulation
 
 sys = VanDerPol()
-sys.add_store('states.x', alias='x')
-sys.add_store('states.y', alias='y')
+sys.store('states.x', alias='x')
+sys.store('states.y', alias='y')
 
 sim = Simulation()
 sim.add_system(sys)
@@ -323,7 +323,7 @@ numerical integration scheme.</p></div>
         # Store initial results
         if self._t == 0:
             for sys in self.systems:
-                sys.store(self._t)
+                sys.do_store(self._t)
 
         # Integrate
         steps = int(t / store_dt)
@@ -337,7 +337,7 @@ numerical integration scheme.</p></div>
 
             # Store results
             for sys in self.systems:
-                sys.store(solver.t)
+                sys.do_store(solver.t)
 
             # Check events
             terminate = False
@@ -494,7 +494,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     # Store initial results
     if self._t == 0:
         for sys in self.systems:
-            sys.store(self._t)
+            sys.do_store(self._t)
 
     # Integrate
     steps = int(t / store_dt)
@@ -508,7 +508,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 
         # Store results
         for sys in self.systems:
-            sys.store(solver.t)
+            sys.do_store(solver.t)
 
         # Check events
         terminate = False
@@ -558,8 +558,8 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         self._outputs = ParameterContainer()
 
         # Connections
-        self._pre_connections = list()
-        self._post_connections = list()
+        self._pre_connections = dict()
+        self._post_connections = dict()
 
         # Result
         self._store_vars = set()
@@ -657,7 +657,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
             self._subs.append(sub_system)
 
     # Connection API
-    def add_pre_connection(self, connection_func) -&gt; Callable:
+    def add_pre_connection(self, connection_func, dependees=None) -&gt; Callable:
         &#34;&#34;&#34;
         Adds a pre-connection callable to this system.
 
@@ -672,10 +672,16 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         if connection_func in self._pre_connections:
             raise ValueError(&#34;This pre-connection has already been added!&#34;)
 
-        self._pre_connections.append(connection_func)
-        return partial(self._pre_connections.remove, connection_func)
+        dependees = dependees or getattr(connection_func, &#34;dependees&#34;, [])
 
-    def add_post_connection(self, connection_func) -&gt; Callable:
+        self._pre_connections[connection_func] = dependees
+
+        def _deleter():
+            del self._pre_connections[connection_func]
+
+        return _deleter
+
+    def add_post_connection(self, connection_func, dependees=None) -&gt; Callable:
         &#34;&#34;&#34;
         Adds a post-connection callable to this system.
 
@@ -690,14 +696,20 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         if connection_func in self._post_connections:
             raise ValueError(&#34;This post-connection has already been added!&#34;)
 
-        self._post_connections.append(connection_func)
-        return partial(self._post_connections.remove, connection_func)
+        dependees = dependees or getattr(connection_func, &#34;dependees&#34;, [])
+
+        self._post_connections[connection_func] = dependees
+
+        def _deleter():
+            del self._post_connections[connection_func]
+
+        return _deleter
 
     # Results API
-    def store(self, time):
+    def do_store(self, time):
 
         for sub in self._subs:
-            sub.store(time)
+            sub.do_store(time)
 
         for attr_str, key_str in self._store_vars:
             val = deepcopy(attrgetter(attr_str)(self))
@@ -705,7 +717,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 
         self.res.store(&#34;time&#34;, time)
 
-    def add_store(self, attribute: str, alias=None) -&gt; None:
+    def store(self, attribute: str, alias=None) -&gt; None:
         &#34;&#34;&#34;
         Adds an attribute or subattribute of this system
          to be stored during a simulation.
@@ -729,14 +741,15 @@ charge of choosing a reasonable step size for the problem at hand.</p>
             sub._step(time)
 
         # Apply pre-connections
-        for con in self._pre_connections:
+
+        for con in TopologicalSorter(self._pre_connections).static_order():
             con(self, time)
 
         # Step this system
         self.do_step(time)
 
         # Apply post-connections
-        for con in self._post_connections:
+        for con in TopologicalSorter(self._post_connections).static_order():
             con(self, time)
 
     @abstractmethod
@@ -845,7 +858,7 @@ def states(self):
 <h3>Methods</h3>
 <dl>
 <dt id="dynode.SystemInterface.add_post_connection"><code class="name flex">
-<span>def <span class="ident">add_post_connection</span></span>(<span>self, connection_func) ‑> Callable</span>
+<span>def <span class="ident">add_post_connection</span></span>(<span>self, connection_func, dependees=None) ‑> Callable</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a post-connection callable to this system.</p>
@@ -858,7 +871,7 @@ def states(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_post_connection(self, connection_func) -&gt; Callable:
+<pre><code class="python">def add_post_connection(self, connection_func, dependees=None) -&gt; Callable:
     &#34;&#34;&#34;
     Adds a post-connection callable to this system.
 
@@ -873,12 +886,18 @@ def states(self):
     if connection_func in self._post_connections:
         raise ValueError(&#34;This post-connection has already been added!&#34;)
 
-    self._post_connections.append(connection_func)
-    return partial(self._post_connections.remove, connection_func)</code></pre>
+    dependees = dependees or getattr(connection_func, &#34;dependees&#34;, [])
+
+    self._post_connections[connection_func] = dependees
+
+    def _deleter():
+        del self._post_connections[connection_func]
+
+    return _deleter</code></pre>
 </details>
 </dd>
 <dt id="dynode.SystemInterface.add_pre_connection"><code class="name flex">
-<span>def <span class="ident">add_pre_connection</span></span>(<span>self, connection_func) ‑> Callable</span>
+<span>def <span class="ident">add_pre_connection</span></span>(<span>self, connection_func, dependees=None) ‑> Callable</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a pre-connection callable to this system.</p>
@@ -891,7 +910,7 @@ def states(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_pre_connection(self, connection_func) -&gt; Callable:
+<pre><code class="python">def add_pre_connection(self, connection_func, dependees=None) -&gt; Callable:
     &#34;&#34;&#34;
     Adds a pre-connection callable to this system.
 
@@ -906,40 +925,14 @@ def states(self):
     if connection_func in self._pre_connections:
         raise ValueError(&#34;This pre-connection has already been added!&#34;)
 
-    self._pre_connections.append(connection_func)
-    return partial(self._pre_connections.remove, connection_func)</code></pre>
-</details>
-</dd>
-<dt id="dynode.SystemInterface.add_store"><code class="name flex">
-<span>def <span class="ident">add_store</span></span>(<span>self, attribute: str, alias=None) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Adds an attribute or subattribute of this system
-to be stored during a simulation.</p>
-<p><code>attribute</code> is a string of the form <code>x.y.z</code></p>
-<p><code>alias</code> is optionally a string under which the stored attribute will be
-available at in the result.</p>
-<p>Raises <code>AttributeError</code> if attribute is non-existing</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def add_store(self, attribute: str, alias=None) -&gt; None:
-    &#34;&#34;&#34;
-    Adds an attribute or subattribute of this system
-     to be stored during a simulation.
+    dependees = dependees or getattr(connection_func, &#34;dependees&#34;, [])
 
-    `attribute` is a string of the form `x.y.z`
+    self._pre_connections[connection_func] = dependees
 
-    `alias` is optionally a string under which the stored attribute will be
-     available at in the result.
+    def _deleter():
+        del self._pre_connections[connection_func]
 
-    Raises `AttributeError` if attribute is non-existing
-    &#34;&#34;&#34;
-    attrgetter(attribute)(
-        self
-    )  # Try to access attribute, raises AttributeError if non-existing
-    self._store_vars.add((attribute, alias or attribute))</code></pre>
+    return _deleter</code></pre>
 </details>
 </dd>
 <dt id="dynode.SystemInterface.add_subsystem"><code class="name flex">
@@ -979,6 +972,27 @@ def do_step(self, time):
     &#34;&#34;&#34;
     To be implemented by child classes!
     &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="dynode.SystemInterface.do_store"><code class="name flex">
+<span>def <span class="ident">do_store</span></span>(<span>self, time)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def do_store(self, time):
+
+    for sub in self._subs:
+        sub.do_store(time)
+
+    for attr_str, key_str in self._store_vars:
+        val = deepcopy(attrgetter(attr_str)(self))
+        self.res.store(key_str, val)
+
+    self.res.store(&#34;time&#34;, time)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1026,10 +1040,10 @@ def do_step(self, time):
 <ul class="two-column">
 <li><code><a title="dynode.SystemInterface.add_post_connection" href="#dynode.SystemInterface.add_post_connection">add_post_connection</a></code></li>
 <li><code><a title="dynode.SystemInterface.add_pre_connection" href="#dynode.SystemInterface.add_pre_connection">add_pre_connection</a></code></li>
-<li><code><a title="dynode.SystemInterface.add_store" href="#dynode.SystemInterface.add_store">add_store</a></code></li>
 <li><code><a title="dynode.SystemInterface.add_subsystem" href="#dynode.SystemInterface.add_subsystem">add_subsystem</a></code></li>
 <li><code><a title="dynode.SystemInterface.ders" href="#dynode.SystemInterface.ders">ders</a></code></li>
 <li><code><a title="dynode.SystemInterface.do_step" href="#dynode.SystemInterface.do_step">do_step</a></code></li>
+<li><code><a title="dynode.SystemInterface.do_store" href="#dynode.SystemInterface.do_store">do_store</a></code></li>
 <li><code><a title="dynode.SystemInterface.inputs" href="#dynode.SystemInterface.inputs">inputs</a></code></li>
 <li><code><a title="dynode.SystemInterface.outputs" href="#dynode.SystemInterface.outputs">outputs</a></code></li>
 <li><code><a title="dynode.SystemInterface.res" href="#dynode.SystemInterface.res">res</a></code></li>
