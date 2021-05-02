@@ -3,15 +3,15 @@ Solving initial value problems of sets of connected and/or recursive
  dynamical systems through numerical integration.
 """
 
-from copy import deepcopy
+
 from abc import ABC, abstractmethod
 from typing import Callable
-from operator import attrgetter
+
 from graphlib import TopologicalSorter
 
 import numpy as np
 
-from .containers import ParameterContainer, VariableContainer, ResultContainer
+from .containers import ParameterContainer, VariableContainer
 
 
 class SystemInterface(ABC):
@@ -36,10 +36,6 @@ class SystemInterface(ABC):
         # Connections
         self._pre_connections = dict()
         self._post_connections = dict()
-
-        # Result
-        self._store_vars = set()
-        self._res = ResultContainer()
 
     # Properties
     @property
@@ -77,15 +73,6 @@ class SystemInterface(ABC):
         Accessible as attributes.
         """
         return self._outputs
-
-    @property
-    def res(self):
-        """
-        ResultContainer of stored results.
-
-        Accessible as keys.
-        """
-        return self._res
 
     # State/der handling
     def get_states(self):
@@ -180,35 +167,6 @@ class SystemInterface(ABC):
             del self._post_connections[connection_func]
 
         return _deleter
-
-    # Results API
-    def do_store(self, time):
-
-        for sub in self._subs:
-            sub.do_store(time)
-
-        for attr_str, key_str in self._store_vars:
-            val = deepcopy(attrgetter(attr_str)(self))
-            self.res.store(key_str, val)
-
-        self.res.store("time", time)
-
-    def store(self, attribute: str, alias=None) -> None:
-        """
-        Adds an attribute or subattribute of this system
-         to be stored during a simulation.
-
-        `attribute` is a string of the form `x.y.z`
-
-        `alias` is optionally a string under which the stored attribute will be
-         available at in the result.
-
-        Raises `AttributeError` if attribute is non-existing
-        """
-        attrgetter(attribute)(
-            self
-        )  # Try to access attribute, raises AttributeError if non-existing
-        self._store_vars.add((attribute, alias or attribute))
 
     # pylint: disable=protected-access
     def _step(self, time):

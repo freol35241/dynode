@@ -40,7 +40,7 @@ class Simulation:
 
     def __init__(self):
         self._systems = list()
-        self._events = set()
+        self._observers = list()
         self._t = 0
 
     @property
@@ -54,30 +54,42 @@ class Simulation:
         """
         Adds a system to the simulation
         """
-        if not system in self._systems:
-            self._systems.append(system)
+        if system in self._systems:
+            raise ValueError(
+                f"System({system}) has already been added to this simulation!"
+            )
+        self._systems.append(system)
 
-    def add_event(self, event) -> None:
+    def add_observer(self, observer) -> None:
         """
-        Adds an event to this simulation.
+        Adds an observer to this simulation.
 
-        `event` is a callable of the form:
+        `observer` is a callable of the form:
         ```
-        def event(t : int, states : np.ndarray) -> bool:
-            return True or False
+        def observer(t : int, states : np.ndarray) -> None:
         ```
-        The simulation will break early if any such event returns True
+
+        The observer is called for every  `observer_dt` during the simulation.
+
+        An `observer` can return True to signal that the simulation should break early.
+        ```
+        def observer(t : int, states : np.ndarray) -> bool:
+            return True
+        ```
         """
-        self._events.add(event)
-        return partial(self._events.remove, event)
+        if observer in self._observers:
+            raise ValueError(f"Observer({observer}) already registered!")
+
+        self._observers.append(observer)
+        return partial(self._observers.remove, observer)
 
     # pylint: disable=invalid-name, protected-access
     def simulate(
-        self, t, store_dt, fixed_step=False, integrator="dopri5", **kwargs
+        self, t, observer_dt, fixed_step=False, integrator="dopri5", **kwargs
     ) -> int:
         """
-        Step forward in time, `t` seconds while storing any stored variables and
-         checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
+        Step forward in time, `t` seconds while informing any `observer`s about the
+         progress every `observer_dt` interval. If `fixed_step=True`, `observer_dt`
          is also used as the internal step size of the solver, leaving the user in
          charge of choosing a reasonable step size for the problem at hand.
 
@@ -114,7 +126,7 @@ class Simulation:
         solver.set_initial_value(y0, t=self._t)
 
         # Try with a large step from the beginning
-        kwargs.update({"first_step": store_dt})
+        kwargs.update({"first_step": observer_dt})
 
         # Fixed step size workaround
         if fixed_step:
@@ -123,33 +135,29 @@ class Simulation:
         # Setup of integration scheme
         solver.set_integrator(integrator, **kwargs)
 
-        # Store initial results
+        # Inform the observers about the initial state
         if self._t == 0:
-            for sys in self.systems:
-                sys.do_store(self._t)
+            for obs in self._observers:
+                obs(self._t, solver.y)
 
         # Integrate
-        steps = int(t / store_dt)
+        steps = int(t / observer_dt)
 
         for _ in range(steps):
 
             # Step
-            solver.integrate(solver.t + store_dt)
+            solver.integrate(solver.t + observer_dt)
             if not solver.successful():
                 raise RuntimeError("Solver failed")
 
-            # Store results
-            for sys in self.systems:
-                sys.do_store(solver.t)
-
-            # Check events
+            # Inform observers and gather their responses
             terminate = False
-            for event in self._events:
-                if event(solver.t, solver.y):
+            for obs in self._observers:
+                if obs(solver.t, solver.y):
                     terminate = True
                     break
 
-            # Bail if any event is True
+            # Bail if any observer returns True
             if terminate:
                 break
 

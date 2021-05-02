@@ -18,6 +18,7 @@ __pdoc__ = {
 from typing import Callable
 
 from .simulation import Simulation
+from .recorder import Recorder
 from .system import SystemInterface
 
 
@@ -40,4 +41,4 @@ def connect_signals(container1, key1, container2, key2) -> Callable:
     return connect
 
 
-__all__ = ["Simulation", "SystemInterface", "connect_signals"]
+__all__ = ["Simulation", "Recorder", "SystemInterface", "connect_signals"]
