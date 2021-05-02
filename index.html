@@ -133,41 +133,41 @@ A framework for modelling and simulation of dynamical systems in the form of
 &#34;&#34;&#34;
 
 __pdoc__ = {
-    &#39;containers&#39;: False,
-    &#39;simulation&#39;: False,
-    &#39;system&#39;: False,
-    &#39;SystemInterface.get_states&#39;: False,
-    &#39;SystemInterface.get_ders&#39;: False,
-    &#39;SystemInterface.dispatch_states&#39;: False,
-    &#39;SystemInterface.store&#39;: False
+    &#34;containers&#34;: False,
+    &#34;simulation&#34;: False,
+    &#34;system&#34;: False,
+    &#34;SystemInterface.get_states&#34;: False,
+    &#34;SystemInterface.get_ders&#34;: False,
+    &#34;SystemInterface.dispatch_states&#34;: False,
+    &#34;SystemInterface.store&#34;: False,
 }
+
+from typing import Callable
 
 from .simulation import Simulation
 from .system import SystemInterface
-from typing import Callable
+
 
 def connect_signals(container1, key1, container2, key2) -&gt; Callable:
     &#34;&#34;&#34;Returns callable that connects key1 of container1 to key2
-     of container2. The callable can be used as a pre-step and/or
-     post-step connection.
-     
-     Example usage, connecting state `x` on sys1 to input `a` on sys2:
-     ```
-     sys1.add_post_connection(
-         connect_signals(sys1.states, &#39;x&#39;, sys2.inputs, &#39;a&#39;)
-     )
-     ```
-    &#34;&#34;&#34;    
+    of container2. The callable can be used as a pre-step and/or
+    post-step connection.
+
+    Example usage, connecting state `x` on sys1 to input `a` on sys2:
+    ```
+    sys1.add_post_connection(
+        connect_signals(sys1.states, &#39;x&#39;, sys2.inputs, &#39;a&#39;)
+    )
+    ```
+    &#34;&#34;&#34;
     # pylint: disable=unused-argument
     def connect(*args, **kwargs):
         setattr(container2, key2, getattr(container1, key1))
+
     return connect
 
-__all__ = [
-    &#39;Simulation&#39;,
-    &#39;SystemInterface&#39;,
-    &#39;connect_signals&#39;
-]</code></pre>
+
+__all__ = [&#34;Simulation&#34;, &#34;SystemInterface&#34;, &#34;connect_signals&#34;]</code></pre>
 </details>
 </section>
 <section>
@@ -195,19 +195,20 @@ post-step connection.</p>
 </summary>
 <pre><code class="python">def connect_signals(container1, key1, container2, key2) -&gt; Callable:
     &#34;&#34;&#34;Returns callable that connects key1 of container1 to key2
-     of container2. The callable can be used as a pre-step and/or
-     post-step connection.
-     
-     Example usage, connecting state `x` on sys1 to input `a` on sys2:
-     ```
-     sys1.add_post_connection(
-         connect_signals(sys1.states, &#39;x&#39;, sys2.inputs, &#39;a&#39;)
-     )
-     ```
-    &#34;&#34;&#34;    
+    of container2. The callable can be used as a pre-step and/or
+    post-step connection.
+
+    Example usage, connecting state `x` on sys1 to input `a` on sys2:
+    ```
+    sys1.add_post_connection(
+        connect_signals(sys1.states, &#39;x&#39;, sys2.inputs, &#39;a&#39;)
+    )
+    ```
+    &#34;&#34;&#34;
     # pylint: disable=unused-argument
     def connect(*args, **kwargs):
         setattr(container2, key2, getattr(container1, key1))
+
     return connect</code></pre>
 </details>
 </dd>
@@ -233,11 +234,12 @@ numerical integration scheme.</p></div>
      dynamical systems that can be stepped forward in time by a
      numerical integration scheme.
     &#34;&#34;&#34;
+
     def __init__(self):
         self._systems = list()
         self._events = set()
         self._t = 0
-        
+
     @property
     def systems(self):
         &#34;&#34;&#34;
@@ -255,7 +257,7 @@ numerical integration scheme.</p></div>
     def add_event(self, event) -&gt; None:
         &#34;&#34;&#34;
         Adds an event to this simulation.
-        
+
         `event` is a callable of the form:
         ```
         def event(t : int, states : np.ndarray) -&gt; bool:
@@ -266,29 +268,31 @@ numerical integration scheme.</p></div>
         self._events.add(event)
         return partial(self._events.remove, event)
 
-    #pylint: disable=invalid-name, protected-access
-    def simulate(self, t, store_dt, fixed_step=False, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
+    # pylint: disable=invalid-name, protected-access
+    def simulate(
+        self, t, store_dt, fixed_step=False, integrator=&#34;dopri5&#34;, **kwargs
+    ) -&gt; int:
         &#34;&#34;&#34;
         Step forward in time, `t` seconds while storing any stored variables and
          checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
          is also used as the internal step size of the solver, leaving the user in
          charge of choosing a reasonable step size for the problem at hand.
-        
+
         Returns the current time of the simulation.
-         
+
         Raise RuntimeErrors if:
-        
+
         * There are no systems added to the simulation
         * There are no states/ders to be integrated
         * The solver fails due to numerical instabilities
         &#34;&#34;&#34;
         if not self.systems:
-            raise RuntimeError(&#39;Need at least 1 system in the simulation!&#39;)
+            raise RuntimeError(&#34;Need at least 1 system in the simulation!&#34;)
 
         # Initial state
         y0 = collect_states(self._systems)
         if not y0.size &gt; 0:
-            raise RuntimeError(&#39;Need at least one state/der combination!&#39;)
+            raise RuntimeError(&#34;Need at least one state/der combination!&#34;)
 
         dy = np.zeros_like(y0)
 
@@ -306,16 +310,12 @@ numerical integration scheme.</p></div>
         solver = ode(func)
         solver.set_initial_value(y0, t=self._t)
 
-        #Try with a large step from the beginning
-        kwargs.update({
-            &#39;first_step&#39;: store_dt
-        })
-        
+        # Try with a large step from the beginning
+        kwargs.update({&#34;first_step&#34;: store_dt})
+
         # Fixed step size workaround
         if fixed_step:
-            kwargs.update({
-                &#39;atol&#39;: np.inf
-            })
+            kwargs.update({&#34;atol&#34;: np.inf})
 
         # Setup of integration scheme
         solver.set_integrator(integrator, **kwargs)
@@ -326,14 +326,14 @@ numerical integration scheme.</p></div>
                 sys.store(self._t)
 
         # Integrate
-        steps = int(t/store_dt)
+        steps = int(t / store_dt)
 
         for _ in range(steps):
 
             # Step
-            solver.integrate(solver.t+store_dt)
+            solver.integrate(solver.t + store_dt)
             if not solver.successful():
-                raise RuntimeError(&#39;Solver failed&#39;)
+                raise RuntimeError(&#34;Solver failed&#34;)
 
             # Store results
             for sys in self.systems:
@@ -349,7 +349,7 @@ numerical integration scheme.</p></div>
             # Bail if any event is True
             if terminate:
                 break
-            
+
         # Update internal state
         self._t = solver.t
 
@@ -392,7 +392,7 @@ def systems(self):
 <pre><code class="python">def add_event(self, event) -&gt; None:
     &#34;&#34;&#34;
     Adds an event to this simulation.
-    
+
     `event` is a callable of the form:
     ```
     def event(t : int, states : np.ndarray) -&gt; bool:
@@ -440,28 +440,30 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def simulate(self, t, store_dt, fixed_step=False, integrator=&#39;dopri5&#39;, **kwargs) -&gt; int:
+<pre><code class="python">def simulate(
+    self, t, store_dt, fixed_step=False, integrator=&#34;dopri5&#34;, **kwargs
+) -&gt; int:
     &#34;&#34;&#34;
     Step forward in time, `t` seconds while storing any stored variables and
      checking events every `store_dt` interval. If `fixed_step=True`, `store_dt`
      is also used as the internal step size of the solver, leaving the user in
      charge of choosing a reasonable step size for the problem at hand.
-    
+
     Returns the current time of the simulation.
-     
+
     Raise RuntimeErrors if:
-    
+
     * There are no systems added to the simulation
     * There are no states/ders to be integrated
     * The solver fails due to numerical instabilities
     &#34;&#34;&#34;
     if not self.systems:
-        raise RuntimeError(&#39;Need at least 1 system in the simulation!&#39;)
+        raise RuntimeError(&#34;Need at least 1 system in the simulation!&#34;)
 
     # Initial state
     y0 = collect_states(self._systems)
     if not y0.size &gt; 0:
-        raise RuntimeError(&#39;Need at least one state/der combination!&#39;)
+        raise RuntimeError(&#34;Need at least one state/der combination!&#34;)
 
     dy = np.zeros_like(y0)
 
@@ -479,16 +481,12 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     solver = ode(func)
     solver.set_initial_value(y0, t=self._t)
 
-    #Try with a large step from the beginning
-    kwargs.update({
-        &#39;first_step&#39;: store_dt
-    })
-    
+    # Try with a large step from the beginning
+    kwargs.update({&#34;first_step&#34;: store_dt})
+
     # Fixed step size workaround
     if fixed_step:
-        kwargs.update({
-            &#39;atol&#39;: np.inf
-        })
+        kwargs.update({&#34;atol&#34;: np.inf})
 
     # Setup of integration scheme
     solver.set_integrator(integrator, **kwargs)
@@ -499,14 +497,14 @@ charge of choosing a reasonable step size for the problem at hand.</p>
             sys.store(self._t)
 
     # Integrate
-    steps = int(t/store_dt)
+    steps = int(t / store_dt)
 
     for _ in range(steps):
 
         # Step
-        solver.integrate(solver.t+store_dt)
+        solver.integrate(solver.t + store_dt)
         if not solver.successful():
-            raise RuntimeError(&#39;Solver failed&#39;)
+            raise RuntimeError(&#34;Solver failed&#34;)
 
         # Store results
         for sys in self.systems:
@@ -522,7 +520,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         # Bail if any event is True
         if terminate:
             break
-        
+
     # Update internal state
     self._t = solver.t
 
@@ -545,6 +543,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     Abstract Base Class (ABC) defining the System Interface.
 
     &#34;&#34;&#34;
+
     # pylint: disable=too-many-instance-attributes
     def __init__(self):
         super().__init__()
@@ -571,7 +570,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def states(self):
         &#34;&#34;&#34;
         VariableContainer of states.
-        
+
         Accessible as attributes.
         &#34;&#34;&#34;
         return self._states
@@ -580,7 +579,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def ders(self):
         &#34;&#34;&#34;
         VariableContainer of ders.
-        
+
         Accessible as attributes.
         &#34;&#34;&#34;
         return self._ders
@@ -589,7 +588,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def inputs(self):
         &#34;&#34;&#34;
         ParameterContainer of inputs.
-        
+
         Accessible as attributes.
         &#34;&#34;&#34;
         return self._inputs
@@ -598,7 +597,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def outputs(self):
         &#34;&#34;&#34;
         ParameterContainer of outputs.
-        
+
         Accessible as attributes.
         &#34;&#34;&#34;
         return self._outputs
@@ -607,7 +606,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def res(self):
         &#34;&#34;&#34;
         ResultContainer of stored results.
-        
+
         Accessible as keys.
         &#34;&#34;&#34;
         return self._res
@@ -618,10 +617,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         states = [sub.get_states() for sub in self._subs]
         states.extend(list(self.states.values()))
 
-        return np.concatenate(
-            states,
-            axis=None
-        ) if states else np.array(states)
+        return np.concatenate(states, axis=None) if states else np.array(states)
 
     def dispatch_states(self, idx, states):
 
@@ -651,11 +647,11 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def add_subsystem(self, sub_system) -&gt; None:
         &#34;&#34;&#34;
         Add a subsystem to this system.
-        
+
         Raises `ValueError` if sub is a reference to this system.
         &#34;&#34;&#34;
         if sub_system is self:
-            raise ValueError(&#39;Cant have self as subsystem to self!&#39;)
+            raise ValueError(&#34;Cant have self as subsystem to self!&#34;)
 
         if not sub_system in self._subs:
             self._subs.append(sub_system)
@@ -664,17 +660,17 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def add_pre_connection(self, connection_func) -&gt; Callable:
         &#34;&#34;&#34;
         Adds a pre-connection callable to this system.
-        
+
         `connection_func` is a callable of the form:
         ```
         def connection_func(system : SystemInterface, time : int):
             pass
         ```
-        
+
         Returns a callable that, when called, removes this pre-connection.
         &#34;&#34;&#34;
         if connection_func in self._pre_connections:
-            raise ValueError(&#39;This pre-connection has already been added!&#39;)
+            raise ValueError(&#34;This pre-connection has already been added!&#34;)
 
         self._pre_connections.append(connection_func)
         return partial(self._pre_connections.remove, connection_func)
@@ -682,17 +678,17 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def add_post_connection(self, connection_func) -&gt; Callable:
         &#34;&#34;&#34;
         Adds a post-connection callable to this system.
-        
+
         `connection_func` is a callable of the form:
         ```
         def connection_func(system : SystemInterface, time : int):
             pass
         ```
-        
+
         Returns a callable that, when called, removes this post-connection.
         &#34;&#34;&#34;
         if connection_func in self._post_connections:
-            raise ValueError(&#39;This post-connection has already been added!&#39;)
+            raise ValueError(&#34;This post-connection has already been added!&#34;)
 
         self._post_connections.append(connection_func)
         return partial(self._post_connections.remove, connection_func)
@@ -707,20 +703,23 @@ charge of choosing a reasonable step size for the problem at hand.</p>
             val = deepcopy(attrgetter(attr_str)(self))
             self.res.store(key_str, val)
 
-        self.res.store(&#39;time&#39;, time)
+        self.res.store(&#34;time&#34;, time)
 
-    def add_store(self, attribute : str, alias=None) -&gt; None:
+    def add_store(self, attribute: str, alias=None) -&gt; None:
         &#34;&#34;&#34;
         Adds an attribute or subattribute of this system
          to be stored during a simulation.
-         
+
         `attribute` is a string of the form `x.y.z`
-        
-        `alias` is optionally a string under which the stored attribute will be available at in the result.
-        
+
+        `alias` is optionally a string under which the stored attribute will be
+         available at in the result.
+
         Raises `AttributeError` if attribute is non-existing
         &#34;&#34;&#34;
-        attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
+        attrgetter(attribute)(
+            self
+        )  # Try to access attribute, raises AttributeError if non-existing
         self._store_vars.add((attribute, alias or attribute))
 
     # pylint: disable=protected-access
@@ -728,7 +727,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
         # Recurse over subsystems
         for sub in self._subs:
             sub._step(time)
-            
+
         # Apply pre-connections
         for con in self._pre_connections:
             con(self, time)
@@ -744,8 +743,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
     def do_step(self, time):
         &#34;&#34;&#34;
         To be implemented by child classes!
-        &#34;&#34;&#34;
-        pass</code></pre>
+        &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -765,7 +763,7 @@ charge of choosing a reasonable step size for the problem at hand.</p>
 def ders(self):
     &#34;&#34;&#34;
     VariableContainer of ders.
-    
+
     Accessible as attributes.
     &#34;&#34;&#34;
     return self._ders</code></pre>
@@ -783,7 +781,7 @@ def ders(self):
 def inputs(self):
     &#34;&#34;&#34;
     ParameterContainer of inputs.
-    
+
     Accessible as attributes.
     &#34;&#34;&#34;
     return self._inputs</code></pre>
@@ -801,7 +799,7 @@ def inputs(self):
 def outputs(self):
     &#34;&#34;&#34;
     ParameterContainer of outputs.
-    
+
     Accessible as attributes.
     &#34;&#34;&#34;
     return self._outputs</code></pre>
@@ -819,7 +817,7 @@ def outputs(self):
 def res(self):
     &#34;&#34;&#34;
     ResultContainer of stored results.
-    
+
     Accessible as keys.
     &#34;&#34;&#34;
     return self._res</code></pre>
@@ -837,7 +835,7 @@ def res(self):
 def states(self):
     &#34;&#34;&#34;
     VariableContainer of states.
-    
+
     Accessible as attributes.
     &#34;&#34;&#34;
     return self._states</code></pre>
@@ -863,17 +861,17 @@ def states(self):
 <pre><code class="python">def add_post_connection(self, connection_func) -&gt; Callable:
     &#34;&#34;&#34;
     Adds a post-connection callable to this system.
-    
+
     `connection_func` is a callable of the form:
     ```
     def connection_func(system : SystemInterface, time : int):
         pass
     ```
-    
+
     Returns a callable that, when called, removes this post-connection.
     &#34;&#34;&#34;
     if connection_func in self._post_connections:
-        raise ValueError(&#39;This post-connection has already been added!&#39;)
+        raise ValueError(&#34;This post-connection has already been added!&#34;)
 
     self._post_connections.append(connection_func)
     return partial(self._post_connections.remove, connection_func)</code></pre>
@@ -896,17 +894,17 @@ def states(self):
 <pre><code class="python">def add_pre_connection(self, connection_func) -&gt; Callable:
     &#34;&#34;&#34;
     Adds a pre-connection callable to this system.
-    
+
     `connection_func` is a callable of the form:
     ```
     def connection_func(system : SystemInterface, time : int):
         pass
     ```
-    
+
     Returns a callable that, when called, removes this pre-connection.
     &#34;&#34;&#34;
     if connection_func in self._pre_connections:
-        raise ValueError(&#39;This pre-connection has already been added!&#39;)
+        raise ValueError(&#34;This pre-connection has already been added!&#34;)
 
     self._pre_connections.append(connection_func)
     return partial(self._pre_connections.remove, connection_func)</code></pre>
@@ -919,24 +917,28 @@ def states(self):
 <div class="desc"><p>Adds an attribute or subattribute of this system
 to be stored during a simulation.</p>
 <p><code>attribute</code> is a string of the form <code>x.y.z</code></p>
-<p><code>alias</code> is optionally a string under which the stored attribute will be available at in the result.</p>
+<p><code>alias</code> is optionally a string under which the stored attribute will be
+available at in the result.</p>
 <p>Raises <code>AttributeError</code> if attribute is non-existing</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_store(self, attribute : str, alias=None) -&gt; None:
+<pre><code class="python">def add_store(self, attribute: str, alias=None) -&gt; None:
     &#34;&#34;&#34;
     Adds an attribute or subattribute of this system
      to be stored during a simulation.
-     
+
     `attribute` is a string of the form `x.y.z`
-    
-    `alias` is optionally a string under which the stored attribute will be available at in the result.
-    
+
+    `alias` is optionally a string under which the stored attribute will be
+     available at in the result.
+
     Raises `AttributeError` if attribute is non-existing
     &#34;&#34;&#34;
-    attrgetter(attribute)(self) # Try to access attribute, raises AttributeError if non-existing
+    attrgetter(attribute)(
+        self
+    )  # Try to access attribute, raises AttributeError if non-existing
     self._store_vars.add((attribute, alias or attribute))</code></pre>
 </details>
 </dd>
@@ -953,11 +955,11 @@ to be stored during a simulation.</p>
 <pre><code class="python">def add_subsystem(self, sub_system) -&gt; None:
     &#34;&#34;&#34;
     Add a subsystem to this system.
-    
+
     Raises `ValueError` if sub is a reference to this system.
     &#34;&#34;&#34;
     if sub_system is self:
-        raise ValueError(&#39;Cant have self as subsystem to self!&#39;)
+        raise ValueError(&#34;Cant have self as subsystem to self!&#34;)
 
     if not sub_system in self._subs:
         self._subs.append(sub_system)</code></pre>
@@ -976,8 +978,7 @@ to be stored during a simulation.</p>
 def do_step(self, time):
     &#34;&#34;&#34;
     To be implemented by child classes!
-    &#34;&#34;&#34;
-    pass</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
