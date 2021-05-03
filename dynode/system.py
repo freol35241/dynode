@@ -5,7 +5,7 @@ Solving initial value problems of sets of connected and/or recursive
 
 
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, Type, Optional, List
 
 from graphlib import TopologicalSorter
 
@@ -15,9 +15,9 @@ from .containers import ParameterContainer, VariableContainer
 
 
 class SystemInterface(ABC):
-    """
-    Abstract Base Class (ABC) defining the System Interface.
+    """Abstract Base Class (ABC) defining the System Interface.
 
+    A child class must implement the `do_step` method.
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -39,39 +39,23 @@ class SystemInterface(ABC):
 
     # Properties
     @property
-    def states(self):
-        """
-        VariableContainer of states.
-
-        Accessible as attributes.
-        """
+    def states(self) -> VariableContainer:
+        """The states of the system."""
         return self._states
 
     @property
-    def ders(self):
-        """
-        VariableContainer of ders.
-
-        Accessible as attributes.
-        """
+    def ders(self) -> VariableContainer:
+        """The derivatives of the system."""
         return self._ders
 
     @property
-    def inputs(self):
-        """
-        ParameterContainer of inputs.
-
-        Accessible as attributes.
-        """
+    def inputs(self) -> ParameterContainer:
+        """The inputs of the system."""
         return self._inputs
 
     @property
-    def outputs(self):
-        """
-        ParameterContainer of outputs.
-
-        Accessible as attributes.
-        """
+    def outputs(self) -> ParameterContainer:
+        """The outputs of the system."""
         return self._outputs
 
     # State/der handling
@@ -107,11 +91,14 @@ class SystemInterface(ABC):
         return idx
 
     # Subsystem API
-    def add_subsystem(self, sub_system) -> None:
-        """
-        Add a subsystem to this system.
+    def add_subsystem(self, sub_system: Type["SystemInterface"]) -> None:
+        """Add a subsystem to this system
 
-        Raises `ValueError` if sub is a reference to this system.
+        Args:
+            sub_system (Type[SystemInterface]): The subsystem to add
+
+        Raises:
+            ValueError: If the subsystem is `self`
         """
         if sub_system is self:
             raise ValueError("Cant have self as subsystem to self!")
@@ -120,18 +107,34 @@ class SystemInterface(ABC):
             self._subs.append(sub_system)
 
     # Connection API
-    def add_pre_connection(self, connection_func, dependees=None) -> Callable:
-        """
-        Adds a pre-connection callable to this system.
+    def add_pre_connection(
+        self, connection_func: Callable, dependees: Optional[List[Callable]] = None
+    ) -> Callable:
+        """Add a pre-connection to the system.
 
         `connection_func` is a callable of the form:
-        ```
-        def connection_func(system : SystemInterface, time : int):
-            pass
-        ```
 
-        Returns a callable that, when called, removes this pre-connection.
+        .. highlight:: python
+        .. code-block:: python
+
+            def connection_func(system : SystemInterface, time : int):
+                pass
+
+        Args:
+            connection_func (Callable): The connection function to add
+            dependees (Optional[List[Callable]], optional): A list of dependees that
+                `connection_func` depends on. A topological sort will be performed to
+                ensure all pre-connections are executed in the correct order. Defaults
+                to None.
+
+        Raises:
+            ValueError: If `connection_func` has already been added.
+
+        Returns:
+            Callable: A de-registering function. By calling this, `connection_func`
+                will be removed from the list of pre-connections.
         """
+
         if connection_func in self._pre_connections:
             raise ValueError("This pre-connection has already been added!")
 
@@ -144,17 +147,32 @@ class SystemInterface(ABC):
 
         return _deleter
 
-    def add_post_connection(self, connection_func, dependees=None) -> Callable:
-        """
-        Adds a post-connection callable to this system.
+    def add_post_connection(
+        self, connection_func: Callable, dependees: Optional[List[Callable]] = None
+    ) -> Callable:
+        """Add a post-connection to the system.
 
         `connection_func` is a callable of the form:
-        ```
-        def connection_func(system : SystemInterface, time : int):
-            pass
-        ```
 
-        Returns a callable that, when called, removes this post-connection.
+        .. highlight:: python
+        .. code-block:: python
+
+            def connection_func(system : SystemInterface, time : int):
+                pass
+
+        Args:
+            connection_func (Callable): The connection function to add
+            dependees (Optional[List[Callable]], optional): A list of dependees that
+                `connection_func` depends on. A topological sort will be performed to
+                ensure all post-connections are executed in the correct order. Defaults
+                to None.
+
+        Raises:
+            ValueError: If `connection_func` has already been added.
+
+        Returns:
+            Callable: A de-registering function. By calling this, `connection_func`
+                will be removed from the list of post-connections.
         """
         if connection_func in self._post_connections:
             raise ValueError("This post-connection has already been added!")
@@ -187,7 +205,9 @@ class SystemInterface(ABC):
             con(self, time)
 
     @abstractmethod
-    def do_step(self, time):
-        """
-        To be implemented by child classes!
+    def do_step(self, time: float):
+        """Abstract method to be implemented by child classes!
+
+        Args:
+            time (float): Current simulation time
         """
