@@ -1,8 +1,6 @@
 name: Publish docs
 
 on:
-  push:
-    branches: [ sphinx_doc ]
   release:
     types: [published]
 
