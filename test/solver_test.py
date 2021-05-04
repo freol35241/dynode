@@ -21,7 +21,7 @@ def test_VanDerPol(pinned):
 
     assert s.states.x == pinned.approx()
     assert s.states.y == pinned.approx()
-    assert rec[s]["states.x"] == pinned.approx()
+    assert rec.results[s]["states.x"] == pinned.approx()
 
 
 def test_connected_systems():
@@ -50,7 +50,7 @@ def test_connected_systems():
 
     sim.simulate(10, 0.1)
 
-    assert np.array_equal(rec[sys1]["y"][1:], rec[sys2]["mu"][1:])
+    assert np.array_equal(rec.results[sys1]["y"][1:], rec.results[sys2]["mu"][1:])
 
 
 def test_heirarchical_systems():
@@ -116,8 +116,8 @@ def test_1DOF_MassSpring(pinned):
 
     sim.simulate(20, 0.05)
 
-    upper = max(rec[s]["x"][1:])
-    lower = min(rec[s]["x"][1:])
+    upper = max(rec.results[s]["x"][1:])
+    lower = min(rec.results[s]["x"][1:])
 
     assert upper == pinned.approx(rel=0.001)
     assert lower == pinned.approx(rel=0.001)

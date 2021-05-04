@@ -10,15 +10,24 @@ from typing import Optional, Type
 from .system import SystemInterface
 
 
-class Recorder(defaultdict):
+class Recorder:
     """Generic recorder functor.
 
     Can be used as an `observer` in conjunction with a `Simulation`.
     """
 
     def __init__(self):
-        super().__init__(lambda: defaultdict(list))
+        self._results = defaultdict(lambda: defaultdict(list))
         self._stores = defaultdict(list)
+
+    @property
+    def results(self) -> dict:
+        """The recorded results
+
+        Returns:
+            dict: The recorded results as a dict
+        """
+        return dict(self._results)
 
     def store(
         self, system: Type[SystemInterface], attribute: str, alias: Optional[str] = None
@@ -43,9 +52,9 @@ class Recorder(defaultdict):
 
     def __call__(self, time, _):
         for sys, store_vars in self._stores.items():
-            self[sys]["time"].append(time)
+            self._results[sys]["time"].append(time)
             for attr_str, key_str in store_vars:
                 val = deepcopy(attrgetter(attr_str)(sys))
-                self[sys][key_str].append(
+                self._results[sys][key_str].append(
                     val
                 )  # TODO: Find a better way to handle `sys`

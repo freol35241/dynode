@@ -12,11 +12,11 @@ from scipy.integrate import ode
 from .system import SystemInterface
 
 
-def collect_states(systems):
+def collect_states(systems: List[SystemInterface]) -> np.ndarray:
     return np.concatenate([sys.get_states() for sys in systems], axis=None)
 
 
-def dispatch_states(states, systems):
+def dispatch_states(states: np.ndarray, systems: List[SystemInterface]):
     idx = 0
     for sys in systems:
         idx = sys.dispatch_states(idx, states)
@@ -25,7 +25,7 @@ def dispatch_states(states, systems):
         raise RuntimeError("Mismatch in number of states and ders!")
 
 
-def collect_ders(ders, systems):
+def collect_ders(ders: np.ndarray, systems: List[SystemInterface]):
     idx = 0
     for sys in systems:
         idx = sys.get_ders(idx, ders)
@@ -48,8 +48,10 @@ class Simulation:
 
     @property
     def systems(self) -> List[SystemInterface]:
-        """
-        List of systems added to this simulation
+        """Systems part of this simulation
+
+        Returns:
+            List[SystemInterface]: A list of the systems added to this simulation
         """
         return self._systems
 
@@ -129,24 +131,12 @@ class Simulation:
                 forwarded to `scipy.integrate.ode`. Defaults to "dopri5".
 
         Raises:
-            RuntimeError: If the input is not according to expectations.
+            RuntimeError: If there are no systems added to the simulation
+            RuntimeError: If there are no states/ders to be integrated
+            RuntimeError: The solver fails due to numerical instabilities
 
         Returns:
             int: The current time of the simulation.
-        """
-        """
-        Step forward in time, `t` seconds while informing any `observer`s about the
-         progress every `observer_dt` interval. If `fixed_step=True`, `observer_dt`
-         is also used as the internal step size of the solver, leaving the user in
-         charge of choosing a reasonable step size for the problem at hand.
-
-        Returns the current time of the simulation.
-
-        Raise RuntimeErrors if:
-
-        * There are no systems added to the simulation
-        * There are no states/ders to be integrated
-        * The solver fails due to numerical instabilities
         """
         if not self.systems:
             raise RuntimeError("Need at least 1 system in the simulation!")

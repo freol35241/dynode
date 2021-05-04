@@ -1,6 +1,6 @@
 .. _dynode-reference:
 
-Dynode
+dynode
 =========================
 
 .. automodule:: dynode

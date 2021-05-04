@@ -40,22 +40,48 @@ class SystemInterface(ABC):
     # Properties
     @property
     def states(self) -> VariableContainer:
-        """The states of the system."""
+        """The states of this system
+
+        Readable and writeable as both attributes and keys. Must be of scalar or
+        sequence type!
+
+        Returns:
+            VariableContainer: States of this system
+        """
         return self._states
 
     @property
     def ders(self) -> VariableContainer:
-        """The derivatives of the system."""
+        """The derivatives of this system
+
+        Readable and writeable as both attributes and keys. Must be of scalar or
+        sequence type!
+
+        Returns:
+            VariableContainer: Derivatives of this system
+        """
         return self._ders
 
     @property
     def inputs(self) -> ParameterContainer:
-        """The inputs of the system."""
+        """The inputs of this system
+
+        Readable and writeable as both attributes and keys. Can be any type.
+
+        Returns:
+            ParameterContainer: Inputs of this system
+        """
         return self._inputs
 
     @property
     def outputs(self) -> ParameterContainer:
-        """The outputs of the system."""
+        """The outputs of this system
+
+        Readable and writeable as both attributes and keys. Can be any type.
+
+        Returns:
+            ParameterContainer: Outputs of this system
+        """
         return self._outputs
 
     # State/der handling
@@ -105,6 +131,16 @@ class SystemInterface(ABC):
 
         if not sub_system in self._subs:
             self._subs.append(sub_system)
+
+    @property
+    def subsystems(self) -> List[Type["SystemInterface"]]:
+        """The subsystems of this system
+
+        Returns:
+            List[Type[SystemInterface]]: A list of subsystems adhering to the
+                `SystemInterface` interface
+        """
+        return self._subs
 
     # Connection API
     def add_pre_connection(
@@ -185,6 +221,19 @@ class SystemInterface(ABC):
             del self._post_connections[connection_func]
 
         return _deleter
+
+    @property
+    def connections(self) -> List[Callable]:
+        """All connection callbacks registered to this system.
+
+        Sorted in topological order
+
+        Returns:
+            List[Callable]: Sorted list of connection callbacks
+        """
+        return list(TopologicalSorter(self._pre_connections).static_order()) + list(
+            TopologicalSorter(self._post_connections).static_order()
+        )
 
     # pylint: disable=protected-access
     def _step(self, time):
