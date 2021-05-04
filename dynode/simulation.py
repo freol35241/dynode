@@ -4,16 +4,19 @@ Solving initial value problems of sets of connected and/or recursive
 """
 
 from functools import partial
+from typing import List, Type, Callable
 
 import numpy as np
 from scipy.integrate import ode
 
+from .system import SystemInterface
 
-def collect_states(systems):
+
+def collect_states(systems: List[SystemInterface]) -> np.ndarray:
     return np.concatenate([sys.get_states() for sys in systems], axis=None)
 
 
-def dispatch_states(states, systems):
+def dispatch_states(states: np.ndarray, systems: List[SystemInterface]):
     idx = 0
     for sys in systems:
         idx = sys.dispatch_states(idx, states)
@@ -22,7 +25,7 @@ def dispatch_states(states, systems):
         raise RuntimeError("Mismatch in number of states and ders!")
 
 
-def collect_ders(ders, systems):
+def collect_ders(ders: np.ndarray, systems: List[SystemInterface]):
     idx = 0
     for sys in systems:
         idx = sys.get_ders(idx, ders)
@@ -32,10 +35,10 @@ def collect_ders(ders, systems):
 
 
 class Simulation:
-    """
-    Simulation class representing a set of connected or unconnected
-     dynamical systems that can be stepped forward in time by a
-     numerical integration scheme.
+    """A simulation.
+
+    Representing a set of connected or unconnected dynamical systems that can be
+    stepped forward in time by a numerical integration scheme.
     """
 
     def __init__(self):
@@ -44,15 +47,23 @@ class Simulation:
         self._t = 0
 
     @property
-    def systems(self):
-        """
-        List of systems added to this simulation
+    def systems(self) -> List[SystemInterface]:
+        """Systems part of this simulation
+
+        Returns:
+            List[SystemInterface]: A list of the systems added to this simulation
         """
         return self._systems
 
-    def add_system(self, system) -> None:
-        """
-        Adds a system to the simulation
+    def add_system(self, system: Type[SystemInterface]) -> None:
+        """Adds a system to the simulation.
+
+        Args:
+            system (Type[SystemInterface]): The system to add, adhering to the
+                interface provided by `SystemInterface`.
+
+        Raises:
+            ValueError: If `system` has already been added to the simulation.
         """
         if system in self._systems:
             raise ValueError(
@@ -60,22 +71,33 @@ class Simulation:
             )
         self._systems.append(system)
 
-    def add_observer(self, observer) -> None:
-        """
-        Adds an observer to this simulation.
+    def add_observer(self, observer: Callable) -> None:
+        """Add an observer to the simulation.
 
-        `observer` is a callable of the form:
-        ```
-        def observer(t : int, states : np.ndarray) -> None:
-        ```
+        An `observer` is a callable of the form:
 
-        The observer is called for every  `observer_dt` during the simulation.
+        .. highlight:: python
+        .. code-block:: python
 
-        An `observer` can return True to signal that the simulation should break early.
-        ```
-        def observer(t : int, states : np.ndarray) -> bool:
-            return True
-        ```
+            def observer(t : int, states : np.ndarray) -> None:
+
+        An `observer` can return True to signal that the simulation should break early:
+
+        .. highlight:: python
+        .. code-block:: python
+
+            def observer(t : int, states : np.ndarray) -> bool:
+                return True
+
+        Args:
+            observer (Callable): A callable that will be called every `observer_dt`.
+
+        Raises:
+            ValueError: If `observer` has already been added to the simulation.
+
+        Returns:
+            Callable: A de-registering function. By calling this, `observer`
+                will be removed from the list of observers.
         """
         if observer in self._observers:
             raise ValueError(f"Observer({observer}) already registered!")
@@ -85,21 +107,36 @@ class Simulation:
 
     # pylint: disable=invalid-name, protected-access
     def simulate(
-        self, t, observer_dt, fixed_step=False, integrator="dopri5", **kwargs
+        self,
+        t: float,
+        observer_dt: float,
+        fixed_step: bool = False,
+        integrator: str = "dopri5",
+        **kwargs,
     ) -> int:
-        """
-        Step forward in time, `t` seconds while informing any `observer`s about the
-         progress every `observer_dt` interval. If `fixed_step=True`, `observer_dt`
-         is also used as the internal step size of the solver, leaving the user in
-         charge of choosing a reasonable step size for the problem at hand.
+        """Perform simulation.
 
-        Returns the current time of the simulation.
+        Step the collection of systems forward in time, `t` seconds while informing
+        any `observer`s about the progress every `observer_dt` interval. If
+        `fixed_step=True`, `observer_dt` is also used as the internal step size of the
+        solver, leaving the user in charge of choosing a reasonable step size for the
+        problem at hand.
 
-        Raise RuntimeErrors if:
+        Args:
+            t (float): Total time to progress
+            observer_dt (float): Timestep with which the observers will be invoked.
+            fixed_step (bool, optional): If True, `observer_dt` is used as the internal
+                step size of the solver. Defaults to False.
+            integrator (str, optional): Which solver to use, this argument is directly
+                forwarded to `scipy.integrate.ode`. Defaults to "dopri5".
 
-        * There are no systems added to the simulation
-        * There are no states/ders to be integrated
-        * The solver fails due to numerical instabilities
+        Raises:
+            RuntimeError: If there are no systems added to the simulation
+            RuntimeError: If there are no states/ders to be integrated
+            RuntimeError: The solver fails due to numerical instabilities
+
+        Returns:
+            int: The current time of the simulation.
         """
         if not self.systems:
             raise RuntimeError("Need at least 1 system in the simulation!")

@@ -3,6 +3,6 @@ pytest-cov
 pytest-pinned
 pylint
 black
-mock
-pdoc3
+sphinx
+sphinx-rtd-theme
 -e .

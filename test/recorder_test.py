@@ -28,11 +28,11 @@ def test_recorder_without_alias():
     for i in range(10):
         r(i, i)
 
-    assert len(r[obj]["sub.x"]) == 10
-    assert r[obj]["sub.x"] == [1] * 10
+    assert len(r.results[obj]["sub.x"]) == 10
+    assert r.results[obj]["sub.x"] == [1] * 10
 
-    assert len(r[obj]["time"]) == 10
-    assert r[obj]["time"] == list(range(10))
+    assert len(r.results[obj]["time"]) == 10
+    assert r.results[obj]["time"] == list(range(10))
 
 
 def test_recorder_with_alias():
@@ -44,8 +44,8 @@ def test_recorder_with_alias():
     for i in range(10):
         r(i, i)
 
-    assert len(r[obj]["x"]) == 10
-    assert r[obj]["x"] == [1] * 10
+    assert len(r.results[obj]["x"]) == 10
+    assert r.results[obj]["x"] == [1] * 10
 
-    assert len(r[obj]["time"]) == 10
-    assert r[obj]["time"] == list(range(10))
+    assert len(r.results[obj]["time"]) == 10
+    assert r.results[obj]["time"] == list(range(10))

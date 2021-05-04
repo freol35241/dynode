@@ -1,5 +1,6 @@
+from unittest import mock
+
 import pytest
-import mock
 import numpy as np
 
 from dynode import Simulation as Sim

@@ -1,8 +1,8 @@
 """Tests for system.py
 """
+from unittest import mock
 
 import pytest
-import mock
 import numpy as np
 
 import dynode.system as ds

@@ -1,7 +1,8 @@
 """
 Collection of simple systems for test purposes
 """
-import mock
+from unittest import mock
+
 from dynode import SystemInterface
 
 
