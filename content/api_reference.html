@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>dynode &mdash; dynode 0.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Two connected Van der Pol oscillators" href="examples/two_connected_vanderpols.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> dynode
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/single_vanderpol.html">Single Van der Pol oscillator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/two_connected_vanderpols.html">Two connected Van der Pol oscillators</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">dynode</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">dynode</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>dynode</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/content/api_reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-dynode">
+<span id="dynode"></span><span id="dynode-reference"></span><h1>dynode<a class="headerlink" href="#module-dynode" title="Permalink to this headline">¶</a></h1>
+<p>A framework for modelling and simulation of dynamical systems in the form of
+ordinary differential equations.</p>
+<dl class="py class">
+<dt id="dynode.Recorder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dynode.</span></code><code class="sig-name descname"><span class="pre">Recorder</span></code><a class="headerlink" href="#dynode.Recorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic recorder functor.</p>
+<p>Can be used as an <cite>observer</cite> in conjunction with a <cite>Simulation</cite>.</p>
+<dl class="py method">
+<dt id="dynode.Recorder.results">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">results</span></code><a class="headerlink" href="#dynode.Recorder.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>The recorded results</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The recorded results as a dict</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.Recorder.store">
+<code class="sig-name descname"><span class="pre">store</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">dynode.system.SystemInterface</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#dynode.Recorder.store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a variable/parameter of a system for storing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#dynode.SystemInterface" title="dynode.SystemInterface"><em>SystemInterface</em></a><em>]</em>) – System that owns this variable/parameter</p></li>
+<li><p><strong>attribute</strong> (<em>str</em>) – A string of the form <cite>x.y.z</cite> pointing to the
+variable/parameter to be stored</p></li>
+<li><p><strong>alias</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – A string under which the stored
+attribute will be available at. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – If the provided <cite>attribute</cite> does not exist on <cite>system</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="dynode.Simulation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dynode.</span></code><code class="sig-name descname"><span class="pre">Simulation</span></code><a class="headerlink" href="#dynode.Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simulation.</p>
+<p>Representing a set of connected or unconnected dynamical systems that can be
+stepped forward in time by a numerical integration scheme.</p>
+<dl class="py method">
+<dt id="dynode.Simulation.add_observer">
+<code class="sig-name descname"><span class="pre">add_observer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#dynode.Simulation.add_observer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an observer to the simulation.</p>
+<p>An <cite>observer</cite> is a callable of the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">observer</span><span class="p">(</span><span class="n">t</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">states</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>An <cite>observer</cite> can return True to signal that the simulation should break early:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">observer</span><span class="p">(</span><span class="n">t</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">states</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>observer</strong> (<em>Callable</em>) – A callable that will be called every <cite>observer_dt</cite>.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <cite>observer</cite> has already been added to the simulation.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A de-registering function. By calling this, <cite>observer</cite></dt><dd><p>will be removed from the list of observers.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.Simulation.add_system">
+<code class="sig-name descname"><span class="pre">add_system</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">dynode.system.SystemInterface</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#dynode.Simulation.add_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a system to the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>system</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#dynode.SystemInterface" title="dynode.SystemInterface"><em>SystemInterface</em></a><em>]</em>) – The system to add, adhering to the
+interface provided by <cite>SystemInterface</cite>.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <cite>system</cite> has already been added to the simulation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.Simulation.simulate">
+<code class="sig-name descname"><span class="pre">simulate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer_dt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_step</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrator</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dopri5'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="headerlink" href="#dynode.Simulation.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform simulation.</p>
+<p>Step the collection of systems forward in time, <cite>t</cite> seconds while informing
+any <cite>observer`s about the progress every `observer_dt</cite> interval. If
+<cite>fixed_step=True</cite>, <cite>observer_dt</cite> is also used as the internal step size of the
+solver, leaving the user in charge of choosing a reasonable step size for the
+problem at hand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>float</em>) – Total time to progress</p></li>
+<li><p><strong>observer_dt</strong> (<em>float</em>) – Timestep with which the observers will be invoked.</p></li>
+<li><p><strong>fixed_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, <cite>observer_dt</cite> is used as the internal
+step size of the solver. Defaults to False.</p></li>
+<li><p><strong>integrator</strong> (<em>str</em><em>, </em><em>optional</em>) – Which solver to use, this argument is directly
+forwarded to <cite>scipy.integrate.ode</cite>. Defaults to “dopri5”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – If there are no systems added to the simulation</p></li>
+<li><p><strong>RuntimeError</strong> – If there are no states/ders to be integrated</p></li>
+<li><p><strong>RuntimeError</strong> – The solver fails due to numerical instabilities</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The current time of the simulation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.Simulation.systems">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">systems</span></code><a class="headerlink" href="#dynode.Simulation.systems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Systems part of this simulation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of the systems added to this simulation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="#dynode.SystemInterface" title="dynode.SystemInterface">SystemInterface</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="dynode.SystemInterface">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dynode.</span></code><code class="sig-name descname"><span class="pre">SystemInterface</span></code><a class="headerlink" href="#dynode.SystemInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract Base Class (ABC) defining the System Interface.</p>
+<p>A child class must implement the <cite>do_step</cite> method.</p>
+<dl class="py method">
+<dt id="dynode.SystemInterface.add_post_connection">
+<code class="sig-name descname"><span class="pre">add_post_connection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_func</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependees</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="headerlink" href="#dynode.SystemInterface.add_post_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a post-connection to the system.</p>
+<p><cite>connection_func</cite> is a callable of the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">connection_func</span><span class="p">(</span><span class="n">system</span> <span class="p">:</span> <span class="n">SystemInterface</span><span class="p">,</span> <span class="n">time</span> <span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection_func</strong> (<em>Callable</em>) – The connection function to add</p></li>
+<li><p><strong>dependees</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Callable</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – A list of dependees that
+<cite>connection_func</cite> depends on. A topological sort will be performed to
+ensure all post-connections are executed in the correct order. Defaults
+to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <cite>connection_func</cite> has already been added.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A de-registering function. By calling this, <cite>connection_func</cite></dt><dd><p>will be removed from the list of post-connections.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.add_pre_connection">
+<code class="sig-name descname"><span class="pre">add_pre_connection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_func</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependees</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="headerlink" href="#dynode.SystemInterface.add_pre_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a pre-connection to the system.</p>
+<p><cite>connection_func</cite> is a callable of the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">connection_func</span><span class="p">(</span><span class="n">system</span> <span class="p">:</span> <span class="n">SystemInterface</span><span class="p">,</span> <span class="n">time</span> <span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection_func</strong> (<em>Callable</em>) – The connection function to add</p></li>
+<li><p><strong>dependees</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Callable</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – A list of dependees that
+<cite>connection_func</cite> depends on. A topological sort will be performed to
+ensure all pre-connections are executed in the correct order. Defaults
+to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <cite>connection_func</cite> has already been added.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A de-registering function. By calling this, <cite>connection_func</cite></dt><dd><p>will be removed from the list of pre-connections.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.add_subsystem">
+<code class="sig-name descname"><span class="pre">add_subsystem</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_system</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">dynode.system.SystemInterface</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#dynode.SystemInterface.add_subsystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a subsystem to this system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sub_system</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#dynode.SystemInterface" title="dynode.SystemInterface"><em>SystemInterface</em></a><em>]</em>) – The subsystem to add</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the subsystem is <cite>self</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.connections">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">connections</span></code><a class="headerlink" href="#dynode.SystemInterface.connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>All connection callbacks registered to this system.</p>
+<p>Sorted in topological order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Sorted list of connection callbacks</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Callable]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.ders">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ders</span></code><a class="headerlink" href="#dynode.SystemInterface.ders" title="Permalink to this definition">¶</a></dt>
+<dd><p>The derivatives of this system</p>
+<p>Readable and writeable as both attributes and keys. Must be of scalar or
+sequence type!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Derivatives of this system</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>VariableContainer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.do_step">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">do_step</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dynode.SystemInterface.do_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method to be implemented by child classes!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time</strong> (<em>float</em>) – Current simulation time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.inputs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">inputs</span></code><a class="headerlink" href="#dynode.SystemInterface.inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>The inputs of this system</p>
+<p>Readable and writeable as both attributes and keys. Can be any type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Inputs of this system</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ParameterContainer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.outputs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">outputs</span></code><a class="headerlink" href="#dynode.SystemInterface.outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>The outputs of this system</p>
+<p>Readable and writeable as both attributes and keys. Can be any type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Outputs of this system</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ParameterContainer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.states">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">states</span></code><a class="headerlink" href="#dynode.SystemInterface.states" title="Permalink to this definition">¶</a></dt>
+<dd><p>The states of this system</p>
+<p>Readable and writeable as both attributes and keys. Must be of scalar or
+sequence type!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>States of this system</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>VariableContainer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dynode.SystemInterface.subsystems">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">subsystems</span></code><a class="headerlink" href="#dynode.SystemInterface.subsystems" title="Permalink to this definition">¶</a></dt>
+<dd><p>The subsystems of this system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A list of subsystems adhering to the</dt><dd><p><cite>SystemInterface</cite> interface</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Type[<a class="reference internal" href="#dynode.SystemInterface" title="dynode.SystemInterface">SystemInterface</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="dynode.connect_signals">
+<code class="sig-prename descclassname"><span class="pre">dynode.</span></code><code class="sig-name descname"><span class="pre">connect_signals</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dynode.containers.VariableContainer</span><span class="p"><span class="pre">,</span> </span><span class="pre">dynode.containers.ParameterContainer</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dynode.containers.VariableContainer</span><span class="p"><span class="pre">,</span> </span><span class="pre">dynode.containers.ParameterContainer</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="headerlink" href="#dynode.connect_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly connect two variables/parameters.</p>
+<p>Returns a callable that connects <cite>first_key</cite> of <cite>first</cite> to <cite>second_key</cite> of
+<cite>second</cite>. The callable can be used as a pre-step and/or post-step connection.
+Connecting state <cite>x</cite> on <cite>sys1</cite> to input <cite>a</cite> on <cite>sys2</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sys1</span><span class="o">.</span><span class="n">add_post_connection</span><span class="p">(</span>
+    <span class="n">connect_signals</span><span class="p">(</span><span class="n">sys1</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">sys2</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> (<em>Union</em><em>[</em><em>VariableContainer</em><em>, </em><em>ParameterContainer</em><em>]</em>) – The container to
+connect from</p></li>
+<li><p><strong>first_key</strong> (<em>str</em>) – The variable name in <cite>first</cite> to connect from</p></li>
+<li><p><strong>second</strong> (<em>Union</em><em>[</em><em>VariableContainer</em><em>, </em><em>ParameterContainer</em><em>]</em>) – The container to
+connect to</p></li>
+<li><p><strong>second_key</strong> (<em>str</em>) – The variable name in <cite>second</cite> to connect to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A connection callable</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="examples/two_connected_vanderpols.html" class="btn btn-neutral float-left" title="Two connected Van der Pol oscillators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, freol35241.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
