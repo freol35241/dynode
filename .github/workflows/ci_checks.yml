@@ -57,6 +57,7 @@ jobs:
       run: |
         pytest --cov=dynode --cov-report=xml test
     - name: Codecov
-      uses: codecov/codecov-action@v1.0.7
+      uses: codecov/codecov-action@v1
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml
+        fail_ci_if_error: true

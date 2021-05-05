@@ -30,6 +30,12 @@ def test_system_attributes():
     assert isinstance(s.ders, VariableContainer)
 
 
+def test_try_add_self_as_subsystem():
+    s = EmptyTestSystem()
+    with pytest.raises(ValueError):
+        s.add_subsystem(s)
+
+
 @pytest.mark.parametrize(
     "sys", [EmptyTestSystem, VanDerPol, SingleDegreeMass, CompositeTestSystem]
 )
@@ -157,9 +163,12 @@ def test_pre_connection_ordering():
     s._step(10.5)
 
     assert expected == result
+    assert s.connections.index(first) == 0
+    assert s.connections.index(second) == 1
+    assert s.connections.index(third) == 2
 
 
-def test_pre_connection_ordering():
+def test_post_connection_ordering():
 
     s = EmptyTestSystem()
 
@@ -188,3 +197,6 @@ def test_pre_connection_ordering():
     s._step(10.5)
 
     assert expected == result
+    assert s.connections.index(first) == 0
+    assert s.connections.index(second) == 1
+    assert s.connections.index(third) == 2

@@ -23,6 +23,14 @@ def test_simulation_with_no_states():
         sim.simulate(100, 0.1)
 
 
+def test_adding_system_twice():
+    sim = Sim()
+    empty_system = EmptyTestSystem()
+    sim.add_system(empty_system)
+    with pytest.raises(ValueError):
+        sim.add_system(empty_system)
+
+
 def test_observer_signature():
     sim = Sim()
 
@@ -70,6 +78,17 @@ def test_observer_removal():
 
     assert t_end == pytest.approx(13)
     assert obs.call_count == 31
+
+
+def test_add_observer_twice():
+    sim = Sim()
+
+    def noop():
+        pass
+
+    sim.add_observer(noop)
+    with pytest.raises(ValueError):
+        sim.add_observer(noop)
 
 
 def test_states_ders_mismatch():
