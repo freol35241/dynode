@@ -42,8 +42,8 @@ class Simulation:
     """
 
     def __init__(self):
-        self._systems = list()
-        self._observers = list()
+        self._systems = []
+        self._observers = []
         self._t = 0
 
     @property

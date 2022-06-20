@@ -25,7 +25,7 @@ class SystemInterface(ABC):
         super().__init__()
 
         # Subsystems
-        self._subs = list()
+        self._subs = []
 
         # I/O
         self._states = VariableContainer()
@@ -34,8 +34,8 @@ class SystemInterface(ABC):
         self._outputs = ParameterContainer()
 
         # Connections
-        self._pre_connections = dict()
-        self._post_connections = dict()
+        self._pre_connections = {}
+        self._post_connections = {}
 
     # Properties
     @property
@@ -97,9 +97,9 @@ class SystemInterface(ABC):
         for sub in self._subs:
             idx = sub.dispatch_states(idx, states)
 
-        for key, value in self.states.items():
+        for value in self.states.values():
             jdx = idx + value.size
-            self.states[key][:] = states[idx:jdx].reshape(value.shape)
+            value[:] = states[idx:jdx].reshape(value.shape)
             idx = jdx
 
         return idx

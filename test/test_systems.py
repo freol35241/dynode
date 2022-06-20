@@ -21,7 +21,7 @@ class VanDerPol(SystemInterface):
         y = self.states.y
 
         self.ders.dx = y
-        self.ders.dy = mu * (1 - x ** 2) * y - x
+        self.ders.dy = mu * (1 - x**2) * y - x
 
 
 class SingleDegreeMass(SystemInterface):
