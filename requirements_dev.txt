@@ -1,6 +1,6 @@
 pytest==6.2.3
 pytest-cov==3.0.0
-pytest-pinned==0.4.1
+pytest-pinned==0.4.2
 pylint==2.14.3
 black==22.3.0
 sphinx==5.0.2
