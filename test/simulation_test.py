@@ -42,7 +42,8 @@ def test_observer_signature():
 
     sim.simulate(1, 1)
 
-    t, y = obs.call_args.args
+    args, _ = obs.call_args
+    t, y = args
 
     assert t == 1
     assert np.array_equal(y, np.array([s.states.x, s.states.y]).flatten())
