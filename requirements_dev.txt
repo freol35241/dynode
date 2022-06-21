@@ -4,5 +4,5 @@ pytest-pinned==0.4.2
 pylint==2.14.3
 black==22.3.0
 sphinx==5.0.2
-sphinx-rtd-theme==0.5.2
+sphinx-rtd-theme==1.0.0
 -e .
