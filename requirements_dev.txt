@@ -3,6 +3,6 @@ pytest-cov==4.0.0
 pytest-pinned==0.4.2
 pylint==2.15.4
 black==22.10.0
-sphinx==5.2.3
+sphinx==5.3.0
 sphinx-rtd-theme==1.0.0
 -e .
