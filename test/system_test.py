@@ -60,7 +60,6 @@ def test_dispatch_states(sys):
 
 
 def test_pre_connection_callback_signature():
-
     s = EmptyTestSystem()
     cb = mock.Mock(dependees=[])
     t = 10.5
@@ -73,7 +72,6 @@ def test_pre_connection_callback_signature():
 
 
 def test_post_connection_callback_signature():
-
     s = EmptyTestSystem()
     cb = mock.Mock(dependees=[])
     t = 10.5
@@ -85,7 +83,6 @@ def test_post_connection_callback_signature():
 
 
 def test_pre_connection_callback_remover():
-
     s = EmptyTestSystem()
     cb = mock.Mock()
     t = 10.5
@@ -99,7 +96,6 @@ def test_pre_connection_callback_remover():
 
 
 def test_post_connection_callback_remover():
-
     s = EmptyTestSystem()
     cb = mock.Mock()
     t = 10.5
@@ -113,7 +109,6 @@ def test_post_connection_callback_remover():
 
 
 def test_pre_connection_add_twice():
-
     s = EmptyTestSystem()
     cb = mock.Mock()
 
@@ -124,7 +119,6 @@ def test_pre_connection_add_twice():
 
 
 def test_post_connection_add_twice():
-
     s = EmptyTestSystem()
     cb = mock.Mock()
 
@@ -135,7 +129,6 @@ def test_post_connection_add_twice():
 
 
 def test_pre_connection_ordering():
-
     s = EmptyTestSystem()
 
     expected = [3, 1, 2]
@@ -169,7 +162,6 @@ def test_pre_connection_ordering():
 
 
 def test_post_connection_ordering():
-
     s = EmptyTestSystem()
 
     expected = [3, 1, 2]
