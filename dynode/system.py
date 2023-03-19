@@ -86,14 +86,12 @@ class SystemInterface(ABC):
 
     # State/der handling
     def get_states(self):
-
         states = [sub.get_states() for sub in self._subs]
         states.extend(list(self.states.values()))
 
         return np.concatenate(states, axis=None) if states else np.array(states)
 
     def dispatch_states(self, idx, states):
-
         for sub in self._subs:
             idx = sub.dispatch_states(idx, states)
 
@@ -105,7 +103,6 @@ class SystemInterface(ABC):
         return idx
 
     def get_ders(self, idx, ders):
-
         for sub in self._subs:
             idx = sub.get_ders(idx, ders)
 

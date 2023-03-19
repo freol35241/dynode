@@ -181,7 +181,6 @@ class Simulation:
         steps = int(t / observer_dt)
 
         for _ in range(steps):
-
             # Step
             solver.integrate(solver.t + observer_dt)
             if not solver.successful():
