@@ -27,7 +27,7 @@ setup(
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
     license="MIT",
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3.6",
