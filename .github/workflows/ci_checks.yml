@@ -10,29 +10,29 @@ on:
     branches: [ master ]
 
 jobs:
-  black: 
+  black:
     runs-on: ubuntu-latest
     name: "Running black"
     steps:
     - uses: actions/checkout@v2
     - name: "Set up Python 3"
       uses: actions/setup-python@v2
-      with: 
-          python-version: '3.x'
+      with:
+          python-version: '3.13'
     - name: "Install dependencies"
       run: "pip install -r requirements_dev.txt"
     - name: "Run black!"
       run: "black --check ."
 
-  pylint: 
+  pylint:
     runs-on: ubuntu-latest
     name: "Running pylint"
-    steps: 
+    steps:
     - uses: actions/checkout@v2
     - name: "Set up Python 3"
       uses: actions/setup-python@v2
-      with: 
-          python-version: '3.x'
+      with:
+          python-version: '3.13'
     - name: "Install dependencies"
       run: "pip install -r requirements_dev.txt"
     - name: "Run pylint!"
