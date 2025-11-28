@@ -17,8 +17,7 @@ from test.test_systems import VanDerPol, NUMBA_AVAILABLE
 
 # Skip all tests if Numba is not available
 pytestmark = pytest.mark.skipif(
-    not NUMBA_AVAILABLE,
-    reason="Numba not installed (optional dependency)"
+    not NUMBA_AVAILABLE, reason="Numba not installed (optional dependency)"
 )
 
 if NUMBA_AVAILABLE:

@@ -1,6 +1,7 @@
 """
 Collection of simple systems for test purposes
 """
+
 from unittest import mock
 
 from dynode import SystemInterface
@@ -8,6 +9,7 @@ from dynode import SystemInterface
 # Optional: Numba for JIT compilation
 try:
     from numba import njit
+
     NUMBA_AVAILABLE = True
 except ImportError:
     NUMBA_AVAILABLE = False
@@ -85,6 +87,7 @@ class MockVanDerPol(VanDerPol):
 
 
 if NUMBA_AVAILABLE:
+
     class VanDerPolNumba(SystemInterface):
         """
         Van der Pol oscillator with Numba JIT compilation.

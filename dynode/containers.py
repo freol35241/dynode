@@ -1,5 +1,5 @@
-"""Collection of data containers used by a dynode System
-"""
+"""Collection of data containers used by a dynode System"""
+
 from collections.abc import Sequence
 
 import numpy as np
