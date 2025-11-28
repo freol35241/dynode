@@ -27,6 +27,7 @@ an arbitraily complex collection of, connected or unconnected,
 
    content/examples/single_vanderpol
    content/examples/two_connected_vanderpols
+   content/examples/numba_acceleration
 
 .. toctree::
    :maxdepth: 2

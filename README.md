@@ -8,6 +8,14 @@
 
 Dynode solves equations of the form ```y' = f(t, y)``` using SciPy's [ode solver](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html) but allows ```f``` to be modelled in a modular, object-oriented fashion using the notions of separate ```Systems``` that expose ```states``` and their corresponding derivatives, ```ders```. ```f``` may then be composed of an arbitraily complex collection of, connected or unconnected, ```Systems```.
 
+## Performance
+
+Dynode supports optional [Numba](https://numba.pydata.org/) JIT compilation for accelerating compute-intensive systems. See the [documentation](https://freol35241.github.io/dynode/) for examples showing 2-20x speedups.
+
+```bash
+pip install numba  # Optional dependency
+```
+
 Documentation is available here: https://freol35241.github.io/dynode/
 
 ## License
