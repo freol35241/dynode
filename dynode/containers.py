@@ -1,6 +1,6 @@
 """Collection of data containers used by a dynode System"""
 
-from collections.abc import Sequence
+from collections.abc import Sequence  # pylint: disable=import-error
 
 import numpy as np
 
