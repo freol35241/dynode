@@ -5,4 +5,5 @@ pylint==3.1.0
 black==23.10.1
 sphinx==7.2.6
 sphinx-rtd-theme==2.0.0
+numba>=0.56.0
 -e .
