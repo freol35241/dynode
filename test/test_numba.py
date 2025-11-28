@@ -13,7 +13,7 @@ import numpy as np
 from dynode import Simulation, Recorder
 
 # Import test systems
-from test.test_systems import VanDerPol, NUMBA_AVAILABLE
+from test_systems import VanDerPol, NUMBA_AVAILABLE
 
 # Skip all tests if Numba is not available
 pytestmark = pytest.mark.skipif(
@@ -21,7 +21,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 if NUMBA_AVAILABLE:
-    from test.test_systems import VanDerPolNumba
+    from test_systems import VanDerPolNumba
 
 
 class TestNumbaSystem:
