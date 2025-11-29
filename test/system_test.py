@@ -1,5 +1,5 @@
-"""Tests for system.py
-"""
+"""Tests for system.py"""
+
 from unittest import mock
 
 import pytest

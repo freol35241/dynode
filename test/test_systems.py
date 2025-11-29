@@ -1,9 +1,18 @@
 """
 Collection of simple systems for test purposes
 """
+
 from unittest import mock
 
 from dynode import SystemInterface
+
+# Optional: Numba for JIT compilation
+try:
+    from numba import njit
+
+    NUMBA_AVAILABLE = True
+except ImportError:
+    NUMBA_AVAILABLE = False
 
 
 class VanDerPol(SystemInterface):
@@ -75,3 +84,54 @@ class MockVanDerPol(VanDerPol):
     def do_step(self, time):
         self.mock(time)
         super().do_step(time)
+
+
+if NUMBA_AVAILABLE:
+
+    class VanDerPolNumba(SystemInterface):
+        """
+        Van der Pol oscillator with Numba JIT compilation.
+
+        This demonstrates how to use Numba to accelerate the numerical
+        computation in do_step(). The pattern is:
+        1. Extract numerical logic to a static method
+        2. Decorate with @njit for JIT compilation
+        3. Call from do_step()
+
+        Expected speedup: 2-5x for this simple system after warmup.
+        """
+
+        def __init__(self):
+            super().__init__()
+            self.inputs.mu = 1.0
+            self.states.x = 0.0
+            self.ders.dx = 0.0
+            self.states.y = 0.0
+            self.ders.dy = 0.0
+
+        @staticmethod
+        @njit
+        def _compute_derivatives(x, y, mu):
+            """
+            Pure numerical function compiled with Numba.
+
+            This function:
+            - Takes primitives (floats) as input
+            - Returns primitives as output
+            - Has no side effects
+            - Perfect for Numba nopython mode
+            """
+            dx = y
+            dy = mu * (1 - x**2) * y - x
+            return dx, dy
+
+        def do_step(self, time):
+            """
+            Extract values from containers, call JIT-compiled function,
+            assign results back.
+            """
+            dx, dy = self._compute_derivatives(
+                self.states.x, self.states.y, self.inputs.mu
+            )
+            self.ders.dx = dx
+            self.ders.dy = dy

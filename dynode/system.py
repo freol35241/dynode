@@ -3,7 +3,6 @@ Solving initial value problems of sets of connected and/or recursive
  dynamical systems through numerical integration.
 """
 
-
 from abc import ABC, abstractmethod
 from typing import Callable, Type, Optional, List
 
