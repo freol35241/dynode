@@ -90,7 +90,7 @@ class TestNumbaSystem:
         # Simulate
         final_time = sim.simulate(t=1.0, observer_dt=0.1)
 
-        assert final_time == 1.0
+        assert final_time == pytest.approx(1.0)
         # State should have evolved
         assert system.states.x != 0.0 or system.states.y != 1.0
 
